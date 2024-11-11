@@ -1,8 +1,8 @@
 use crate::{Decisol, Lamports, TokenLamports};
-use rust_decimal::Decimal;
-use std::fmt::Display;
+use rust_decimal::{Decimal, Error};
 use std::ops::Sub;
 use std::ops::{Add, Div, Mul};
+use std::{fmt::Display, str::FromStr};
 impl PartialEq<u64> for Lamports {
     fn eq(&self, other: &u64) -> bool {
         self.amount() == *other
@@ -39,7 +39,18 @@ impl Add<u64> for Lamports {
 impl Display for Lamports {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let dec: Decimal = self.into();
-        write!(f, "{}", dec)
+        let decimals = f.precision().unwrap_or(4);
+
+        write!(f, "{dec:.decimals$}")
+    }
+}
+
+impl FromStr for Lamports {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let amount = s.parse::<Decimal>()?;
+        Ok(amount.into())
     }
 }
 
