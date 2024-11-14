@@ -1,8 +1,8 @@
 use crate::{Decisol, TokenLamports};
 use rust_decimal::Decimal;
-use std::fmt::Display;
 use std::ops::Sub;
 use std::ops::{Add, Div, Mul};
+use std::{fmt::Display, ops::AddAssign};
 impl TokenLamports {
     pub fn from_decimal(mut amount: Decimal, decimals: u8) -> Self {
         amount.rescale(decimals as u32);
@@ -71,16 +71,16 @@ impl Div<TokenLamports> for u128 {
     }
 }
 impl Div for TokenLamports {
-    type Output = Self;
+    type Output = Decimal;
 
     fn div(self, rhs: Self) -> Self::Output {
         if self.decimals() != rhs.decimals() {
             panic!()
         }
-        Self::new(
-            self.amount().checked_div(rhs.amount()).unwrap(),
-            self.decimals(),
-        )
+
+        let lhs: Decimal = self.into();
+        let rhs: Decimal = rhs.into();
+        lhs / rhs
     }
 }
 impl Display for TokenLamports {
@@ -103,6 +103,20 @@ impl Sub for TokenLamports {
         )
     }
 }
+impl Sub<u64> for TokenLamports {
+    type Output = Self;
+
+    fn sub(self, rhs: u64) -> Self::Output {
+        Self::new(self.amount().checked_sub(rhs).unwrap(), self.decimals())
+    }
+}
+impl Add<u64> for TokenLamports {
+    type Output = Self;
+
+    fn add(self, rhs: u64) -> Self::Output {
+        Self::new(self.amount().checked_add(rhs).unwrap(), self.decimals())
+    }
+}
 impl Add for TokenLamports {
     type Output = Self;
 
@@ -114,6 +128,11 @@ impl Add for TokenLamports {
             self.amount().checked_add(rhs.amount()).unwrap(),
             self.decimals(),
         )
+    }
+}
+impl AddAssign for TokenLamports {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }
 

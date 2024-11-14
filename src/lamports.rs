@@ -83,9 +83,11 @@ impl Div<TokenLamports> for Lamports {
     }
 }
 impl Div for Lamports {
-    type Output = Self;
-    fn div(self, rhs: Self) -> Self::Output {
-        Self::new(self.amount() / rhs.amount())
+    type Output = Decimal;
+    fn div(self, rhs: Self) -> Decimal {
+        let lhs: Decimal = self.into();
+        let rhs: Decimal = rhs.into();
+        lhs / rhs
     }
 }
 impl From<Lamports> for Decimal {
