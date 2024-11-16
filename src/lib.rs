@@ -8,14 +8,14 @@ pub trait Decisol: Into<Decimal> {
     fn decimals(&self) -> u8;
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct TokenLamports(pub u64, pub u8);
 impl TokenLamports {
     const fn new(amount: u64, decimals: u8) -> Self {
         Self(amount, decimals)
     }
 }
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Lamports(pub u64);
 impl Lamports {
     pub const DECIMALS: u8 = 9;
