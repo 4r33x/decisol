@@ -86,7 +86,8 @@ impl Div for TokenLamports {
 impl Display for TokenLamports {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let dec: Decimal = self.into();
-        write!(f, "{}", dec)
+        let decimals = f.precision().unwrap_or(5);
+        write!(f, "{dec:.decimals$}")
     }
 }
 
