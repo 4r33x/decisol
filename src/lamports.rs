@@ -136,27 +136,29 @@ impl Mul<Decimal> for Lamports {
         if rhs.is_sign_negative() {
             panic!("Multiplying Lamports by decimal failed: Decimal is negative");
         }
-        let scale = rhs.scale();
-        if scale > 9 {
+        let mut scale = rhs.scale();
+        if scale < 9 {
+            scale = 9;
             rhs.rescale(9);
         }
         Self::new(((self.amount() as u128 * rhs.mantissa() as u128) / (10u128.pow(scale))) as u64)
     }
 }
 
-impl Div<Decimal> for Lamports {
-    type Output = Lamports;
-    fn div(self, mut rhs: Decimal) -> Self::Output {
-        if rhs.is_sign_negative() {
-            panic!("Multiplying Lamports by decimal failed: Decimal is negative");
-        }
-        let scale = rhs.scale();
-        if scale > 9 {
-            rhs.rescale(9);
-        }
-        Self::new(((self.amount() as u128 * rhs.mantissa() as u128) / (10u128.pow(scale))) as u64)
-    }
-}
+// impl Div<Decimal> for Lamports {
+//     type Output = Lamports;
+//     fn div(self, mut rhs: Decimal) -> Self::Output {
+//         if rhs.is_sign_negative() {
+//             panic!("Multiplying Lamports by decimal failed: Decimal is negative");
+//         }
+//         let mut scale = rhs.scale();
+//         if scale < 9 {
+//             scale = 9;
+//             rhs.rescale(9);
+//         }
+//         Self::new(((self.amount() as u128 * rhs.mantissa() as u128) / (10u128.pow(scale))) as u64)
+//     }
+// }
 
 impl Div<Lamports> for u128 {
     type Output = u64;
