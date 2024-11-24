@@ -1,7 +1,7 @@
 use crate::{Decisol, Lamports, TokenLamports};
 use rust_decimal::{Decimal, Error};
-use std::ops::Sub;
 use std::ops::{Add, Div, Mul};
+use std::ops::{AddAssign, Sub};
 use std::{fmt::Display, str::FromStr};
 impl PartialEq<u64> for Lamports {
     fn eq(&self, other: &u64) -> bool {
@@ -172,5 +172,10 @@ impl Add for Lamports {
 
     fn add(self, rhs: Self) -> Self::Output {
         Self::new(self.amount().checked_add(rhs.amount()).unwrap())
+    }
+}
+impl AddAssign for Lamports {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }
