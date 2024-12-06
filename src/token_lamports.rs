@@ -47,9 +47,9 @@ impl Mul<Decimal> for TokenLamports {
             panic!("Multiplying TokenLamports by decimal failed: Decimal is negative");
         }
         let mut scale = rhs.scale();
-        if scale < 9 {
+        if scale > 9 {
             scale = 9;
-            rhs.rescale(9);
+            rhs.rescale(scale);
         }
         //let non_dec = rhs
         Self::new(
@@ -70,6 +70,11 @@ mod tests {
         println!("Price mantissa {}", price.mantissa());
         let res = tokens * price;
         println!("Res {res}");
+        let tokens = TokenLamports(1_000_000_000_000_000, 6);
+        let price_in_sol = dec!(0.0000416618051001150689138382);
+        let sol_price = dec!(240.02800589099727313714931554);
+        let mc = tokens * price_in_sol * sol_price;
+        println!("MC {mc:.0}");
     }
     #[test]
     fn token_lamports_conv_test() {

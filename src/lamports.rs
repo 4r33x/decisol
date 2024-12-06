@@ -137,9 +137,9 @@ impl Mul<Decimal> for Lamports {
             panic!("Multiplying Lamports by decimal failed: Decimal is negative");
         }
         let mut scale = rhs.scale();
-        if scale < 9 {
+        if scale > 9 {
             scale = 9;
-            rhs.rescale(9);
+            rhs.rescale(scale);
         }
         Self::new(((self.amount() as u128 * rhs.mantissa() as u128) / (10u128.pow(scale))) as u64)
     }
