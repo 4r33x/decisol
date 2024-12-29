@@ -33,24 +33,24 @@ mod tests {
         let sol: Lamports = 100.into();
         let token = TokenLamports(100, 9);
         let another_token = TokenLamports(100, 6);
-        let liq = token * another_token;
-        let liq = sol * token;
-        let liq = sol * sol;
-        let liq = token * token;
+        let _liq = token * another_token;
+        let _liq = sol * token;
+        let _liq = sol * sol;
+        let _liq = token * token;
     }
     #[test]
     fn sub() {
         let sol: Lamports = 100.into();
-        let token = TokenLamports(100, 9);
+        let _token = TokenLamports(100, 9);
         let another_token = TokenLamports(100, 6);
-        let amount = sol + sol;
-        let amount_zero = another_token - another_token;
+        let _amount = sol + sol;
+        let _amount_zero = another_token - another_token;
     }
     #[test]
     fn add() {
         let sol: Lamports = 100.into();
-        let token = TokenLamports(100, 9);
-        let another_token = TokenLamports(100, 6);
-        let amount = sol + sol;
+        let _token = TokenLamports(100, 9);
+        let _another_token = TokenLamports(100, 6);
+        let _amount = sol + sol;
     }
 }

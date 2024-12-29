@@ -58,31 +58,7 @@ impl Mul<Decimal> for TokenLamports {
         )
     }
 }
-mod tests {
-    use rust_decimal_macros::dec;
 
-    use crate::{Decisol, TokenLamports};
-
-    #[test]
-    fn token_lamports_mult_test() {
-        let tokens = TokenLamports(999999999032878, 6);
-        let price = dec!(0.0000007562495021987651776628);
-        println!("Price mantissa {}", price.mantissa());
-        let res = tokens * price;
-        println!("Res {res}");
-        let tokens = TokenLamports(1_000_000_000_000_000, 6);
-        let price_in_sol = dec!(0.0000416618051001150689138382);
-        let sol_price = dec!(240.02800589099727313714931554);
-        let mc = tokens * price_in_sol * sol_price;
-        println!("MC {mc:.0}");
-    }
-    #[test]
-    fn token_lamports_conv_test() {
-        let price = dec!(0.00007562495021987651776628);
-        let res: TokenLamports = TokenLamports::from_decimal(price, 6);
-        println!("Res {}", res.amount());
-    }
-}
 // impl Div<Decimal> for TokenLamports {
 //     type Output = TokenLamports;
 //     fn div(self, mut rhs: Decimal) -> Self::Output {
@@ -200,5 +176,31 @@ impl<T: Decisol> Mul<T> for TokenLamports {
     type Output = u128;
     fn mul(self, rhs: T) -> Self::Output {
         self.amount() as u128 * rhs.amount() as u128
+    }
+}
+#[cfg(test)]
+mod tests {
+    use rust_decimal_macros::dec;
+
+    use crate::{Decisol, TokenLamports};
+
+    #[test]
+    fn token_lamports_mult_test() {
+        let tokens = TokenLamports(999999999032878, 6);
+        let price = dec!(0.0000007562495021987651776628);
+        println!("Price mantissa {}", price.mantissa());
+        let res = tokens * price;
+        println!("Res {res}");
+        let tokens = TokenLamports(1_000_000_000_000_000, 6);
+        let price_in_sol = dec!(0.0000416618051001150689138382);
+        let sol_price = dec!(240.02800589099727313714931554);
+        let mc = tokens * price_in_sol * sol_price;
+        println!("MC {mc:.0}");
+    }
+    #[test]
+    fn token_lamports_conv_test() {
+        let price = dec!(0.00007562495021987651776628);
+        let res: TokenLamports = TokenLamports::from_decimal(price, 6);
+        println!("Res {}", res.amount());
     }
 }
