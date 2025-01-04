@@ -17,8 +17,7 @@ impl TokenLamports {
         }
         amount.rescale(decimals as u32);
         let amount = amount.mantissa();
-        println!("{amount}");
-
+        //println!("{amount}");
         Self(amount as u64, decimals)
     }
 }
