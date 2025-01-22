@@ -4,6 +4,9 @@ use std::ops::Sub;
 use std::ops::{Add, Div, Mul};
 use std::{fmt::Display, ops::AddAssign};
 impl TokenLamports {
+    pub fn to_decimal(&self) -> Decimal {
+        Decimal::from_i128_with_scale(self.amount() as i128, self.decimals().into())
+    }
     // pub fn from_decimal(amount: Decimal, decimals: u8) -> Self {
     //     let amount: u64 = (amount * Decimal::from(10u64.pow(decimals as u32)))
     //         .trunc()
@@ -22,22 +25,22 @@ impl TokenLamports {
     }
 }
 
-impl Add<Decimal> for TokenLamports {
-    type Output = Self;
+// impl Add<Decimal> for TokenLamports {
+//     type Output = Self;
 
-    fn add(self, rhs: Decimal) -> Self::Output {
-        let rhs = Self::from_decimal(rhs, self.decimals());
-        self + rhs
-    }
-}
-impl Sub<Decimal> for TokenLamports {
-    type Output = Self;
+//     fn add(self, rhs: Decimal) -> Self::Output {
+//         let rhs = Self::from_decimal(rhs, self.decimals());
+//         self + rhs
+//     }
+// }
+// impl Sub<Decimal> for TokenLamports {
+//     type Output = Self;
 
-    fn sub(self, rhs: Decimal) -> Self::Output {
-        let rhs = Self::from_decimal(rhs, self.decimals());
-        self - rhs
-    }
-}
+//     fn sub(self, rhs: Decimal) -> Self::Output {
+//         let rhs = Self::from_decimal(rhs, self.decimals());
+//         self - rhs
+//     }
+// }
 
 impl Mul<Decimal> for TokenLamports {
     type Output = TokenLamports;
@@ -188,13 +191,13 @@ mod tests {
         let tokens = TokenLamports(999999999032878, 6);
         let price = dec!(0.0000007562495021987651776628);
         println!("Price mantissa {}", price.mantissa());
-        let res = tokens * price;
-        println!("Res {res}");
+        //let res = tokens * price;
+        //println!("Res {res}");
         let tokens = TokenLamports(1_000_000_000_000_000, 6);
         let price_in_sol = dec!(0.0000416618051001150689138382);
         let sol_price = dec!(240.02800589099727313714931554);
-        let mc = tokens * price_in_sol * sol_price;
-        println!("MC {mc:.0}");
+        //let mc = tokens * price_in_sol * sol_price;
+        //println!("MC {mc:.0}");
     }
     #[test]
     fn token_lamports_conv_test() {
