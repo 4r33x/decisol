@@ -16,7 +16,7 @@ impl TokenLamports {
     // }
     pub fn from_decimal(mut amount: Decimal, decimals: u8) -> Self {
         if amount.is_sign_negative() {
-            panic!("when trying to conver negative decimal to lamports")
+            panic!("When trying to convert negative decimal to lamports in fn from_decimal")
         }
         amount.rescale(decimals as u32);
         let amount = amount.mantissa();
