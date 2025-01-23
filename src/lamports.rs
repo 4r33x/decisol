@@ -171,7 +171,7 @@ impl Add for Lamports {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self::new(self.amount().checked_add(rhs.amount()).unwrap())
+        Self::new(self.amount() + rhs.amount())
     }
 }
 impl AddAssign for Lamports {
