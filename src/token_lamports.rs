@@ -82,6 +82,9 @@ impl Mul<Decimal> for TokenLamports {
 impl Div<TokenLamports> for u128 {
     type Output = u64;
     fn div(self, rhs: TokenLamports) -> Self::Output {
+        if rhs.amount() == 0 {
+            panic!()
+        }
         (self / rhs.amount() as u128) as u64
     }
 }
@@ -91,7 +94,7 @@ impl Div for TokenLamports {
     fn div(self, rhs: Self) -> Self::Output {
         let lhs: Decimal = self.into();
         let rhs: Decimal = rhs.into();
-        lhs / rhs
+        lhs.checked_div(rhs).unwrap()
     }
 }
 impl Display for TokenLamports {

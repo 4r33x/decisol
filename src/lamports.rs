@@ -87,7 +87,7 @@ impl Div for Lamports {
     fn div(self, rhs: Self) -> Decimal {
         let lhs: Decimal = self.into();
         let rhs: Decimal = rhs.into();
-        lhs / rhs
+        lhs.checked_div(rhs).unwrap()
     }
 }
 impl From<Lamports> for Decimal {
@@ -163,7 +163,7 @@ impl Mul<Decimal> for Lamports {
 impl Div<Lamports> for u128 {
     type Output = u64;
     fn div(self, rhs: Lamports) -> Self::Output {
-        (self / rhs.amount() as u128) as u64
+        self.checked_div(rhs.amount() as u128).unwrap() as u64
     }
 }
 
