@@ -3,6 +3,7 @@ use rust_decimal::{Decimal, Error};
 use std::ops::{Add, Div, Mul};
 use std::ops::{AddAssign, Sub};
 use std::{fmt::Display, str::FromStr};
+
 impl PartialEq<u64> for Lamports {
     fn eq(&self, other: &u64) -> bool {
         self.amount() == *other
