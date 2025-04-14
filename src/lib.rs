@@ -15,7 +15,9 @@ impl TokenLamports {
         Self(amount, decimals)
     }
 }
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[derive(
+    serde::Serialize, serde::Deserialize, Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord,
+)]
 pub struct Lamports(pub u64);
 impl Lamports {
     pub const DECIMALS: u8 = 9;
