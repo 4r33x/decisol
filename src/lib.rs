@@ -8,7 +8,9 @@ pub trait Decisol: Into<Decimal> {
     fn decimals(&self) -> u8;
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[derive(
+    Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, serde::Deserialize, serde::Serialize,
+)]
 pub struct TokenLamports(pub u64, pub u8);
 impl TokenLamports {
     const fn new(amount: u64, decimals: u8) -> Self {
