@@ -1,8 +1,11 @@
-use crate::{Decisol, TokenLamports};
-use rust_decimal::Decimal;
-use std::ops::Sub;
-use std::ops::{Add, Div, Mul};
-use std::{fmt::Display, ops::AddAssign};
+use {
+    crate::{Decisol, TokenLamports},
+    rust_decimal::Decimal,
+    std::{
+        fmt::Display,
+        ops::{Add, AddAssign, Div, Mul, Sub},
+    },
+};
 impl TokenLamports {
     pub fn to_decimal(&self) -> Decimal {
         Decimal::from_i128_with_scale(self.amount() as i128, self.decimals().into())
@@ -185,9 +188,10 @@ impl<T: Decisol> Mul<T> for TokenLamports {
 }
 #[cfg(test)]
 mod tests {
-    use rust_decimal_macros::dec;
-
-    use crate::{Decisol, TokenLamports};
+    use {
+        crate::{Decisol, TokenLamports},
+        rust_decimal_macros::dec,
+    };
 
     #[test]
     fn token_lamports_mult_test() {
