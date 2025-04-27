@@ -1,0 +1,45 @@
+macro_rules! define_math_common {
+    (
+        $( $variant:ident ),* $(,)?
+    ) => {
+        $(
+            impl<T: Decisol> Mul<T> for $variant {
+                type Output = u128;
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn mul(self, rhs: T) -> Self::Output {
+                    self.amount() as u128 * rhs.amount() as u128
+                }
+            }
+            impl Mul<u64> for $variant {
+                type Output = u128;
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn mul(self, rhs: u64) -> Self::Output {
+                    self.amount() as u128 * rhs as u128
+                }
+            }
+            impl Mul<$variant> for u64 {
+                type Output = u128;
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn mul(self, rhs: $variant) -> Self::Output {
+                    self as u128 * rhs.amount() as u128
+                }
+            }
+            impl Div<$variant> for u128 {
+                type Output = u128;
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn div(self, rhs: $variant) -> Self::Output {
+                    #[cfg(feature = "overflow_checks")]
+                    if rhs.amount() == 0 {
+                        overflow!($variant, Div, self, rhs);
+                        return 0;
+                    }
+                    self / rhs.amount() as u128
+                }
+            }
+
+
+        )*
+
+
+    };
+}

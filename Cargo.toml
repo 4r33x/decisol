@@ -8,12 +8,28 @@ repository.workspace = true
 edition.workspace = true
 
 [dependencies]
-log = {workspace = true}
-pretty_env_logger = { workspace = true }
+log = {workspace = true, optional = true}
+serde = {workspace = true}
 anyhow = { workspace = true }
 rust_decimal.workspace = true
 rust_decimal_macros.workspace = true
-serde.workspace = true
+fastnum = "0.2.3"
+
 
 [lints]
 workspace = true
+
+[features]
+default = ["overflow_errors", "track_caller", "check_enum_kind", "conv_errors"]
+
+track_caller= []
+overflow_checks = []
+overflow_errors = ["dep:log", "overflow_checks"]
+overflow_panics = ["overflow_checks"]
+
+conv_checks=[]
+conv_errors = ["dep:log", "conv_checks"]
+conv_panics = ["conv_checks"]
+
+check_enum_kind = []
+check_enum_decimals = []

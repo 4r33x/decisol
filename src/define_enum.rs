@@ -1,0 +1,108 @@
+macro_rules! define_enum {
+    (
+        $enum_name:ident, $( $variant:ident ),* $(,)?
+    ) => {
+
+        $(
+        impl From<$variant> for $enum_name {
+            fn from(value: $variant) -> Self {
+                Self::$variant(value)
+            }
+        }
+        )*
+
+        #[derive(
+            Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord,
+            serde::Deserialize, serde::Serialize,
+        )]
+        pub enum $enum_name {
+            $(
+                $variant($variant),
+            )*
+        }
+        impl $enum_name {
+            #[cfg_attr(feature = "track_caller", track_caller)]
+            pub fn new(amount: u64, decimals: u8) -> Self {
+                #[allow(unreachable_patterns)]
+                match decimals {
+                    $(
+                        <$variant as Decimals>::DECIMALS => Self::$variant($variant(amount)),
+                    )*
+                    _ => {
+                        let loc = std::panic::Location::caller();
+                        panic!("{}::new failed at {}:{}:{} - invalid decimals: {}", stringify!($enum_name), loc.file(),
+                        loc.line(), loc.column(), decimals)
+                    },
+                }
+            }
+            #[cfg_attr(feature = "track_caller", track_caller)]
+            pub fn new_from_kind(amount: u64, kind: TokenLamportsKind) -> Self {
+                match kind {
+                    $(
+                        TokenLamportsKind::$variant => Self::$variant($variant(amount)),
+                    )*
+                    _ => {
+                        let loc = std::panic::Location::caller();
+                        panic!("{}::new failed at {}:{}:{} - invalid kind: {:?}", stringify!($enum_name), loc.file(),
+                        loc.line(), loc.column(), kind)
+                    },
+                }
+            }
+            #[cfg_attr(feature = "track_caller", track_caller)]
+            pub fn from_udec(value: UD128, decimals: u8) -> Self {
+                let value = value.round(decimals as i16);
+                let value = value.rescale(decimals as i16);
+                #[cfg(feature = "conv_checks")]
+                match value.digits().try_into() {
+                    Ok(v) => Self::new(v, decimals),
+                    Err(e) => {
+                        conv_fail!($enum_name, FromUD128, value, e);
+                        Self::new(0, decimals)
+                    },
+                }
+                #[cfg(not(feature = "conv_checks"))]
+                unsafe{Self::new(value.digits().try_into().unwrap_unchecked(), decimals)}
+            }
+            #[cfg_attr(feature = "track_caller", track_caller)]
+            pub fn from_udec_with_kind(value: UD128, kind: TokenLamportsKind) -> Self {
+                let decimals = kind.decimals();
+                let value = value.round(decimals as i16);
+                let value = value.rescale(decimals as i16);
+                #[cfg(feature = "conv_checks")]
+                match value.digits().try_into() {
+                    Ok(v) => Self::new_from_kind(v, kind),
+                    Err(e) => {
+                        conv_fail!($enum_name, FromUD128, value, e);
+                        Self::new_from_kind(0, kind)
+                    },
+                }
+                #[cfg(not(feature = "conv_checks"))]
+                unsafe{Self::new_from_kind(value.digits().try_into().unwrap_unchecked(), kind)}
+            }
+        }
+
+        impl Decisol for $enum_name {
+            fn amount(&self) -> u64 {
+                match self {
+                    $( $enum_name::$variant(v) => v.0, )*
+                }
+            }
+
+            fn decimals(&self) -> u8 {
+                match self {
+                    $( $enum_name::$variant(_) => $variant::DECIMALS, )*
+                }
+            }
+            fn kind(&self) -> TokenLamportsKind {
+                match self {
+                    $( $enum_name::$variant(_) => <$variant as LamportsKind>::KIND, )*
+                }
+            }
+        }
+        define_common!($enum_name);
+        define_math_common!($enum_name);
+        define_math_enum!($enum_name);
+
+
+    };
+}

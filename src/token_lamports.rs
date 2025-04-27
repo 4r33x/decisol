@@ -24,7 +24,7 @@ impl TokenLamports {
         amount.rescale(decimals as u32);
         let amount = amount.mantissa();
         //println!("{amount}");
-        Self(amount as u64, decimals)
+        Self::new(amount as u64, decimals)
     }
 }
 
@@ -82,15 +82,6 @@ impl Mul<Decimal> for TokenLamports {
 //     }
 // }
 
-impl Div<TokenLamports> for u128 {
-    type Output = u64;
-    fn div(self, rhs: TokenLamports) -> Self::Output {
-        if rhs.amount() == 0 {
-            panic!()
-        }
-        (self / rhs.amount() as u128) as u64
-    }
-}
 impl Div for TokenLamports {
     type Output = Decimal;
 
@@ -98,59 +89,6 @@ impl Div for TokenLamports {
         let lhs: Decimal = self.into();
         let rhs: Decimal = rhs.into();
         lhs.checked_div(rhs).unwrap()
-    }
-}
-impl Display for TokenLamports {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let dec: Decimal = self.into();
-        let decimals = f.precision().unwrap_or(5);
-        write!(f, "{dec:.decimals$}")
-    }
-}
-
-impl Sub for TokenLamports {
-    type Output = Self;
-
-    fn sub(self, rhs: Self) -> Self::Output {
-        if self.decimals() != rhs.decimals() {
-            panic!()
-        }
-        Self::new(
-            self.amount().checked_sub(rhs.amount()).unwrap(),
-            self.decimals(),
-        )
-    }
-}
-impl Sub<u64> for TokenLamports {
-    type Output = Self;
-
-    fn sub(self, rhs: u64) -> Self::Output {
-        Self::new(self.amount().checked_sub(rhs).unwrap(), self.decimals())
-    }
-}
-impl Add<u64> for TokenLamports {
-    type Output = Self;
-
-    fn add(self, rhs: u64) -> Self::Output {
-        Self::new(self.amount().checked_add(rhs).unwrap(), self.decimals())
-    }
-}
-impl Add for TokenLamports {
-    type Output = Self;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        if self.decimals() != rhs.decimals() {
-            panic!()
-        }
-        Self::new(
-            self.amount().checked_add(rhs.amount()).unwrap(),
-            self.decimals(),
-        )
-    }
-}
-impl AddAssign for TokenLamports {
-    fn add_assign(&mut self, rhs: Self) {
-        *self = *self + rhs;
     }
 }
 
@@ -165,27 +103,6 @@ impl From<&TokenLamports> for Decimal {
     }
 }
 
-impl From<TokenLamports> for u64 {
-    fn from(value: TokenLamports) -> Self {
-        value.amount()
-    }
-}
-
-impl Decisol for TokenLamports {
-    fn amount(&self) -> u64 {
-        self.0
-    }
-
-    fn decimals(&self) -> u8 {
-        self.1
-    }
-}
-impl<T: Decisol> Mul<T> for TokenLamports {
-    type Output = u128;
-    fn mul(self, rhs: T) -> Self::Output {
-        self.amount() as u128 * rhs.amount() as u128
-    }
-}
 #[cfg(test)]
 mod tests {
     use {
@@ -195,12 +112,12 @@ mod tests {
 
     #[test]
     fn token_lamports_mult_test() {
-        let tokens = TokenLamports(999999999032878, 6);
+        let tokens = TokenLamports::new(999999999032878, 6);
         let price = dec!(0.0000007562495021987651776628);
         println!("Price mantissa {}", price.mantissa());
         //let res = tokens * price;
         //println!("Res {res}");
-        let tokens = TokenLamports(1_000_000_000_000_000, 6);
+        let tokens = TokenLamports::new(1_000_000_000_000_000, 6);
         let price_in_sol = dec!(0.0000416618051001150689138382);
         let sol_price = dec!(240.02800589099727313714931554);
         //let mc = tokens * price_in_sol * sol_price;
