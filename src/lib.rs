@@ -97,7 +97,13 @@ pub trait Decimals {
 
 #[cfg(test)]
 mod tests {
-    use {super::*, fastnum::UD128};
+    use super::*;
+    #[test]
+    fn display() {
+        println!("{}", UD128::ZERO);
+        println!("{:.4}", UD128::ZERO);
+        println!("{}", Lamports::from(0));
+    }
     #[test]
     fn conv() {
         const LAMPORTS_MAX_DECIMAL: UD128 = udec128!(18446744073.11111111111111111111111);

@@ -15,8 +15,9 @@ macro_rules! define_common{
           }
           impl Display for $variant {
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                let dec: UD128 = self.into();
                 let decimals = f.precision().unwrap_or(4);
+                let dec: UD128 = self.into();
+                let dec = dec.rescale(decimals as i16);
                 write!(f, "{dec:.decimals$}")
             }
         }
