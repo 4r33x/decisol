@@ -18,7 +18,7 @@ mod overflow;
 mod conv_fail;
 pub use fastnum::{
     D128, UD128, dec128,
-    decimal::{Context, ParseError},
+    decimal::{Context, ParseError, UnsignedDecimal},
     int::UInt,
     udec128,
 };
