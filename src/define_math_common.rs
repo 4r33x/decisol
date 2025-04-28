@@ -30,13 +30,25 @@ macro_rules! define_math_common {
                 fn div(self, rhs: $variant) -> Self::Output {
                     #[cfg(feature = "overflow_checks")]
                     if rhs.amount() == 0 {
-                        overflow!($variant, Div, self, rhs);
+                        overflow!($variant, Divu128, self, rhs);
                         return 0;
                     }
                     self / rhs.amount() as u128
                 }
             }
-
+            impl Div<UD128> for $variant {
+                type Output = UD128;
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn div(self, rhs: UD128) -> Self::Output {
+                    #[cfg(feature = "overflow_checks")]
+                    if self.amount() == 0 {
+                        overflow!($variant, DivUD128, self, rhs);
+                        return UD128::NAN;
+                    }
+                    let lhs: UD128 = self.into();
+                    lhs / rhs
+                }
+            }
 
         )*
 

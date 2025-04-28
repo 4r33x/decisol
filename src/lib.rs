@@ -16,13 +16,13 @@ mod define_common;
 mod overflow;
 #[macro_use]
 mod conv_fail;
+pub use fastnum::{
+    D128, UD128, dec128,
+    decimal::{Context, ParseError},
+    int::UInt,
+    udec128,
+};
 use {
-    fastnum::{
-        UD128,
-        decimal::{Context, ParseError},
-        int::UInt,
-        udec128,
-    },
     log::error,
     std::{
         fmt::Display,

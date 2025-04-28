@@ -32,6 +32,18 @@ macro_rules! define_common{
                 //Self::from(value.amount()).div(Self::quantum(value.decimals() as i32, Context::default()))
             }
         }
+        impl From<$variant> for D128 {
+            fn from(value: $variant) -> Self {
+                Self::from_parts(UInt::from(value.amount()),  -(value.decimals() as i32), fastnum::decimal::Sign::Plus, Context::default())
+                //Self::from(value.amount()).div(Self::quantum(value.decimals() as i32, Context::default()))
+            }
+        }
+        impl From<&$variant> for D128 {
+            fn from(value: &$variant) -> Self {
+                Self::from_parts(UInt::from(value.amount()), -(value.decimals() as i32), fastnum::decimal::Sign::Plus,  Context::default())
+                //Self::from(value.amount()).div(Self::quantum(value.decimals() as i32, Context::default()))
+            }
+        }
       )*
   };
 }

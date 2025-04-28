@@ -11,9 +11,7 @@ edition.workspace = true
 log = {workspace = true, optional = true}
 serde = {workspace = true}
 anyhow = { workspace = true }
-rust_decimal.workspace = true
-rust_decimal_macros.workspace = true
-fastnum = "0.2.3"
+fastnum = {workspace =  true, features = ["serde", "numtraits"]}
 
 
 [lints]

@@ -127,6 +127,14 @@ macro_rules! define_math_enum {
 
                 }
             }
+            impl Mul<UD128> for $variant {
+                type Output = $variant;
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn mul(self, rhs: UD128) -> Self::Output {
+                    let lhs: UD128 = self.into();
+                    $variant::from_udec_with_kind(lhs * rhs, self.kind())
+                }
+            }
         )*
     };
 }
