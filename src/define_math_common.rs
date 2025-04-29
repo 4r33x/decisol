@@ -41,7 +41,7 @@ macro_rules! define_math_common {
                 #[cfg_attr(feature = "track_caller", track_caller)]
                 fn div(self, rhs: UD128) -> Self::Output {
                     #[cfg(feature = "overflow_checks")]
-                    if self.amount() == 0 {
+                    if rhs == UD128::ZERO {
                         overflow!($variant, DivUD128, self, rhs);
                         return UD128::NAN;
                     }
