@@ -97,7 +97,19 @@ pub trait Decimals {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use {super::*, num_traits::ConstOne};
+    #[test]
+    fn recip() {
+        let fast_num = UD128::from_parts(
+            UInt::from_str("66100475480188776883681620311725717740").unwrap(),
+            -40,
+            Context::default(),
+        );
+        let recip_by_hand = UD128::ONE / fast_num;
+        println!("recip_by_hand: {recip_by_hand}");
+        let recip = fast_num.recip();
+        println!("recip_deadlock: {recip}")
+    }
     #[test]
     fn display() {
         println!("{}", UD128::ZERO);
