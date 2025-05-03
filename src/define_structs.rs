@@ -10,7 +10,7 @@ macro_rules! define_structs{
             pub struct $variant(pub u64);
 
             impl $variant {
-                const fn new(amount: u64) -> Self {
+                pub const fn new(amount: u64) -> Self {
                     Self(amount)
                 }
             }
