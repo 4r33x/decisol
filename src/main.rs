@@ -1,18 +1,86 @@
-use fastnum::UD128;
+use fastnum::{D128, UD128, dec128};
 
 fn main() {
-    let fastnum_unsigned_max = UD128::MAX;
+    let max = D128::MAX;
+    let min = D128::MIN;
+    let zero0 = D128::ZERO;
+    let zero1 = D128::ZERO;
+    let perc0 = dec128!(0.12214512651236125);
+    let perc1 = dec128!(-0.12214512651236125);
+    let perc2 = perc0 * perc1;
+    let perc3 = dec128!(500.1251235125) / dec128!(100);
+    let perc4 = dec128!(-500.1251235125) / dec128!(100);
+    let perc5 = perc3 * perc4;
+    let nan = D128::NAN;
+    let div_zero = perc5 / zero0;
+    let inf = D128::INFINITY;
+    let neg_inf = -D128::INFINITY;
+    let neg_nan = -nan;
+    let neg_div_zer = -div_zero;
+    let mut v = vec![
+        max, min, inf,
+        neg_inf,
+        //nan, //zero0,
+        // zero1, perc0, perc1, perc2, perc3, perc4,
+        // perc5,
+        //nan,
+        // div_zero, inf,
+        // neg_inf,
+        //neg_nan,
+        // neg_div_zer,
+        // max,
+        // min,
+        // zero0,
+        // zero1,
+        // perc0,
+        // perc1,
+        // perc2,
+        // perc3,
+        // perc4,
+        // perc5,
+        // nan,
+        // div_zero,
+        // inf,
+        // neg_inf,
+        //neg_nan,
+        //neg_div_zer,
+    ]
+    .into_iter()
+    .map(create_enum)
+    .collect::<Vec<_>>();
+    println!("Len is {}", v.len());
+    v.sort_by(|a, b| a.0.cmp(&b.0));
 
-    let std_u128_max = u128::MAX;
-    let fastnum_from_u128_max = UD128::from(std_u128_max);
+    println!("Sorted: {v:?}")
+}
 
-    let fastnum_div_zero = fastnum_from_u128_max / UD128::ZERO;
-    println!("fastnum_unsigned_max: {fastnum_unsigned_max}");
-    println!("std_u128_max: {std_u128_max}");
-    println!("fastnum_from_std_u128_max: {fastnum_from_u128_max}");
-    println!(
-        "fastnum_diff: {}",
-        fastnum_unsigned_max - fastnum_from_u128_max
-    );
-    println!("fastnum_div_zero: {fastnum_div_zero}")
+#[derive(Debug)]
+enum StringEnum {
+    Some,
+    SomeString { value: String },
+    SomeOtherString(String),
+    AnotherOhterString(String),
+    None,
+}
+
+fn create_enum(dec: D128) -> (D128, StringEnum) {
+    if dec.is_zero() {
+        (
+            dec,
+            StringEnum::SomeString {
+                value: "Zero".to_string(),
+            },
+        )
+    } else if dec.is_infinite() {
+        return (dec, StringEnum::SomeOtherString("Infinity".to_string()));
+    } else if dec.is_negative() {
+        return (dec, StringEnum::AnotherOhterString("Negative".to_string()));
+    } else {
+        return (
+            dec,
+            StringEnum::SomeString {
+                value: "Finit_Positive_Decimal".to_string(),
+            },
+        );
+    }
 }

@@ -11,8 +11,8 @@ edition.workspace = true
 log = {workspace = true, optional = true}
 serde = {workspace = true}
 anyhow = { workspace = true }
-fastnum = {workspace =  true, features = ["serde", "numtraits"]}
-
+fastnum = { workspace = true, features = ["serde", "numtraits"]}
+#num-traits = { workspace =  true, features = ["std"] }
 
 [dev-dependencies]
 num-traits = { workspace =  true, features = ["std"] }

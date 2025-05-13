@@ -29,9 +29,17 @@ macro_rules! define_enum {
                         <$variant as Decimals>::DECIMALS => Self::$variant($variant(amount)),
                     )*
                     _ => {
-                        let loc = std::panic::Location::caller();
-                        panic!("{}::new failed at {}:{}:{} - invalid decimals: {}", stringify!($enum_name), loc.file(),
-                        loc.line(), loc.column(), decimals)
+                        #[cfg(feature = "overflow_errors")]
+                        {
+                            conv_fail!(TokenLamports, TokenLamportsNew, decimals, format!("Failed due to invalid decimals, with inner value: {amount}"));
+
+                        }
+                        #[cfg(feature = "overflow_panics")]
+                        {
+                            let loc = std::panic::Location::caller();
+                            panic!("{}::new failed at {}:{}:{} - invalid decimals: {}", stringify!($enum_name), loc.file(),loc.line(), loc.column(), decimals)
+                        }
+                        return Self::new(0, 9);
                     },
                 }
             }

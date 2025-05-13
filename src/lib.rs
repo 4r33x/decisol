@@ -97,7 +97,32 @@ pub trait Decimals {
 
 #[cfg(test)]
 mod tests {
-    use {super::*, num_traits::ConstOne};
+    use {super::*, num_traits::ConstOne, std::cmp};
+    #[test]
+    fn sort() {
+        let nan = D128::NAN;
+        let neg_inf = -D128::INFINITY;
+        let inf = -D128::INFINITY;
+        let zero1 = -D128::ZERO;
+        let zero2 = D128::ZERO;
+        let zero3 = D128::ONE * D128::ZERO;
+        let perc1 = D128::ONE * dec128!(0.1251256613261);
+        let perc2 = D128::ONE * dec128!(-0.1251256613261);
+        let perc3 = dec128!(0.1251256613261) * dec128!(-0.1251256613261);
+        let mut v = vec![perc1, nan, zero2, neg_inf, zero3, perc2, perc3, inf, zero1];
+        v.sort();
+        assert!(v.is_sorted());
+        assert!(v.is_sorted_by(|a, b| a <= b));
+        v.sort_by(|a, b| a.cmp(b));
+        assert!(v.is_sorted());
+        assert!(v.is_sorted_by(|a, b| a <= b));
+        v.sort_unstable();
+        assert!(v.is_sorted());
+        assert!(v.is_sorted_by(|a, b| a <= b));
+        v.sort_unstable_by(|a, b| a.cmp(b));
+        assert!(v.is_sorted());
+        assert!(v.is_sorted_by(|a, b| a <= b));
+    }
     #[test]
     fn recip() {
         let fast_num = UD128::from_parts(
