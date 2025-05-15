@@ -17,10 +17,10 @@ mod overflow;
 #[macro_use]
 mod conv_fail;
 pub use fastnum::{
-    dec128,
+    D128, UD128, dec128,
     decimal::{Context, ParseError, UnsignedDecimal},
     int::UInt,
-    udec128, D128, UD128,
+    udec128,
 };
 use {
     log::error,
@@ -41,6 +41,9 @@ define_structs! {
     TokenLamports7: 7,
     TokenLamports8: 8,
     TokenLamports9: 9,
+    TokenLamports10: 10,
+    TokenLamports11: 11,
+    TokenLamports12: 12,
     Lamports: 9,
     Usdc: 6,
     Usdt: 6,
@@ -57,7 +60,10 @@ define_enum! {
     TokenLamports6,
     TokenLamports7,
     TokenLamports8,
-    TokenLamports9
+    TokenLamports9,
+    TokenLamports10,
+    TokenLamports11,
+    TokenLamports12,
 }
 define_enum! {
     SolanaLamports,
@@ -71,6 +77,9 @@ define_enum! {
     TokenLamports7,
     TokenLamports8,
     TokenLamports9,
+    TokenLamports10,
+    TokenLamports11,
+    TokenLamports12,
     Lamports,
     Usdc,
     Usdt,
@@ -97,7 +106,59 @@ pub trait Decimals {
 
 #[cfg(test)]
 mod tests {
-    use {super::*, num_traits::ConstOne, std::cmp};
+    use {
+        super::*,
+        num_traits::ConstOne,
+        std::{cmp, cmp::Ordering},
+    };
+    #[test]
+    fn cpm_less_test_f() {
+        let max = udec128!(35_000);
+        let curr = udec128!(19205.1716384861040546579908080116424889);
+        assert!(max > curr);
+    }
+    #[test]
+    #[should_panic]
+    fn cpm_less_test() {
+        let max = udec128!(35_000);
+        let curr = udec128!(19205.1716384861040546579908080116424889);
+        assert!(max < curr);
+    }
+    #[test]
+    fn cmp_test() {
+        let min = udec128!(0);
+        let max = udec128!(35_000);
+        let curr = udec128!(19205.1716384861040546579908080116424889);
+        //OK
+        assert!(min < max);
+        //OK
+        assert_eq!(min.cmp(&max), Ordering::Less);
+        //OK
+        assert!(min < curr);
+        //OK
+        assert_eq!(min.cmp(&curr), Ordering::Less);
+        //OK
+        assert!(curr < max);
+        //OK
+        assert_eq!(curr.cmp(&max), Ordering::Less);
+
+        //SHOULD BE OK BUT PANIC INSTEAD
+        assert_eq!(max.cmp(&curr), Ordering::Greater);
+
+        //actual case how this was found
+        if !max.is_zero() && (min > curr || max < curr) {
+            panic!()
+        }
+    }
+    #[test]
+    fn convert() {
+        let dec = udec128!(0.999405000);
+        let lamports: Lamports = dec.into();
+        let dec2: UD128 = lamports.into();
+        println!("dec: {dec}, lamports: {lamports}, dec2: {dec2}");
+        assert_eq!(dec, dec2);
+    }
+
     #[test]
     fn sort() {
         let nan = D128::NAN;
@@ -136,10 +197,35 @@ mod tests {
         println!("recip_deadlock: {recip}")
     }
     #[test]
-    fn display() {
-        println!("{}", UD128::ZERO);
-        println!("{:.4}", UD128::ZERO);
-        println!("{}", Lamports::from(0));
+    fn display_after_op() {
+        // assertion `left == right` failed
+        // left: "0"
+        // right: "0E-7"
+        assert_eq!("0", format!("{:.0}", (UD128::ZERO * udec128!(1.4326236))));
+    }
+    #[test]
+    fn display_after_round() {
+        let num = UD128::ONE.round(9);
+        //OK
+        assert_eq!("1.000000000", num.to_string());
+        let num = udec128!(0.00000432).round(9);
+        //OK
+        assert_eq!("0.000004320", num.to_string());
+
+        //add another zero after dot
+        // assertion `left == right` failed
+        // left: "0.000000432"
+        // right: "4.32E-7"
+        let num = udec128!(0.000000432).round(9);
+        assert_eq!("0.000000432", num.to_string());
+    }
+    #[test]
+    fn display_rounding() {
+        let dec = udec128!(0.999405000);
+        // assertion `left == right` failed
+        // left: "0.99"
+        // right: "0.10"
+        assert_eq!("0.99", format!("{dec:.2}"));
     }
     #[test]
     fn conv() {
