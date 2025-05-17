@@ -213,7 +213,7 @@ mod tests {
         assert_eq!("0.000004320", num.to_string());
 
         //add another zero after dot
-        // assertion `left == right` failed
+        // assertion `left == right` failedq
         // left: "0.000000432"
         // right: "4.32E-7"
         let num = udec128!(0.000000432).round(9);
