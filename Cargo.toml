@@ -16,6 +16,7 @@ fastnum = { workspace = true, features = ["serde", "numtraits"]}
 
 [dev-dependencies]
 num-traits = { workspace =  true, features = ["std"] }
+rust_decimal = "1.37.1"
 
 [lints]
 workspace = true

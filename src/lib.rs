@@ -112,6 +112,12 @@ mod tests {
         std::{cmp, cmp::Ordering},
     };
     #[test]
+    fn test_rust_decimal() {
+        let rust_dec = rust_decimal::Decimal::from_f64_retain(0.999405000).unwrap();
+        assert_eq!("0.99", format!("{rust_dec:.2}"));
+    }
+
+    #[test]
     fn cpm_less_test_f() {
         let max = udec128!(35_000);
         let curr = udec128!(19205.1716384861040546579908080116424889);
@@ -226,6 +232,7 @@ mod tests {
         // left: "0.99"
         // right: "0.10"
         assert_eq!("0.99", format!("{dec:.2}"));
+        //assert_eq!("1.00", format!("{dec:.2}"));
     }
     #[test]
     fn conv() {
