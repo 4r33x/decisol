@@ -17,8 +17,10 @@ macro_rules! define_common{
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 let decimals = f.precision().unwrap_or(4);
                 let dec: UD128 = self.into();
-                let dec = dec.rescale(decimals as i16);
-                write!(f, "{dec:.decimals$}")
+                let dec = dec.round(decimals as i16);
+
+                // Forward *all* formatting flags (width, align, fill, precision, etc.)
+                std::fmt::Display::fmt(&dec, f)
             }
         }
         impl From<$variant> for UD128 {
