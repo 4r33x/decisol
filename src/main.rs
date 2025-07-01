@@ -1,4 +1,6 @@
-use fastnum::{dec128, D128, UD128};
+use fastnum::D128;
+use fastnum::UD128;
+use fastnum::dec128;
 
 fn main() {
     let max = D128::MAX;

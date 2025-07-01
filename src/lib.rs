@@ -16,20 +16,23 @@ mod define_common;
 mod overflow;
 #[macro_use]
 mod conv_fail;
-pub use fastnum::{
-    D128, UD128, dec128,
-    decimal::{Context, ParseError, UnsignedDecimal},
-    int::UInt,
-    udec128,
-};
-use {
-    log::error,
-    std::{
-        fmt::Display,
-        ops::{Add, AddAssign, Div, Mul, Sub, SubAssign},
-        str::FromStr,
-    },
-};
+pub use fastnum::D128;
+pub use fastnum::UD128;
+pub use fastnum::dec128;
+pub use fastnum::decimal::Context;
+pub use fastnum::decimal::ParseError;
+pub use fastnum::decimal::UnsignedDecimal;
+pub use fastnum::int::UInt;
+pub use fastnum::udec128;
+use log::error;
+use std::fmt::Display;
+use std::ops::Add;
+use std::ops::AddAssign;
+use std::ops::Div;
+use std::ops::Mul;
+use std::ops::Sub;
+use std::ops::SubAssign;
+use std::str::FromStr;
 define_structs! {
     TokenLamports0: 0,
     TokenLamports1: 1,
@@ -124,11 +127,10 @@ pub trait Decimals {
 
 #[cfg(test)]
 mod tests {
-    use {
-        super::*,
-        num_traits::ConstOne,
-        std::{cmp, cmp::Ordering},
-    };
+    use super::*;
+    use num_traits::ConstOne;
+    use std::cmp;
+    use std::cmp::Ordering;
     #[test]
     fn test_rust_decimal() {
         let rust_dec = rust_decimal::Decimal::from_f64_retain(0.999405000).unwrap();

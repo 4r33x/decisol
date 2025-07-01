@@ -1,9 +1,8 @@
 #[cfg(test)]
 mod tests {
-    use {
-        crate::{Decisol, TokenLamports},
-        fastnum::udec128,
-    };
+    use crate::Decisol;
+    use crate::TokenLamports;
+    use fastnum::udec128;
 
     #[test]
     fn token_lamports_mult_test() {
