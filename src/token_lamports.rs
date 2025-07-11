@@ -6,12 +6,12 @@ mod tests {
 
     #[test]
     fn token_lamports_mult_test() {
-        let tokens = TokenLamports::new(999999999032878, 6);
+        let _tokens = TokenLamports::new(999999999032878, 6);
         //let res = tokens * price;
         //println!("Res {res}");
-        let tokens = TokenLamports::new(1_000_000_000_000_000, 6);
-        let price_in_sol = udec128!(0.0000416618051001150689138382);
-        let sol_price = udec128!(240.02800589099727313714931554);
+        let _tokens = TokenLamports::new(1_000_000_000_000_000, 6);
+        let _price_in_sol = udec128!(0.0000416618051001150689138382);
+        let _sol_price = udec128!(240.02800589099727313714931554);
         //let mc = tokens * price_in_sol * sol_price;
         //println!("MC {mc:.0}");
     }

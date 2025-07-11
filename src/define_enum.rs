@@ -49,6 +49,7 @@ macro_rules! define_enum {
                     $(
                         TokenLamportsKind::$variant => Self::$variant($variant(amount)),
                     )*
+                    #[allow(unreachable_patterns)]
                     _ => {
                         let loc = std::panic::Location::caller();
                         panic!("{}::new failed at {}:{}:{} - invalid kind: {:?}", stringify!($enum_name), loc.file(),

@@ -128,8 +128,8 @@ pub trait Decimals {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use num_traits::ConstOne;
-    use std::cmp;
+    // use num_traits::ConstOne;
+    // use std::cmp;
     use std::cmp::Ordering;
     #[test]
     fn test_rust_decimal() {
@@ -259,8 +259,8 @@ mod tests {
         const LAMPORTS_MAX_DECIMAL: UD128 = udec128!(18446744073.11111111111111111111111);
         let decimal_max = UD128::MAX;
         let res = Lamports::from(LAMPORTS_MAX_DECIMAL);
-        println!("{res}")
-        //Lamports::from(decimal_max);
+        println!("{res}");
+        let _v = Lamports::from(decimal_max);
     }
 
     #[test]
