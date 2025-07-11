@@ -1,25 +1,20 @@
 [package]
 name = "decisol"
 version = "0.1.0"
-authors.workspace = true
-homepage.workspace = true
-keywords.workspace = true
-repository.workspace = true
-edition.workspace = true
+edition = "2024"
 
 [dependencies]
-log = {workspace = true, optional = true}
-serde = {workspace = true}
-anyhow = { workspace = true }
-fastnum = { workspace = true, features = ["serde", "numtraits"]}
+log = {version = "0.4.27", optional = true}
+serde = {version = "1.0.219"}
+anyhow = { version = "1.0.98" }
+fastnum = { version = "0.2.10", features = ["serde", "numtraits"]}
 #num-traits = { workspace =  true, features = ["std"] }
 
 [dev-dependencies]
-num-traits = { workspace =  true, features = ["std"] }
-rust_decimal = "1.37.1"
+num-traits = {  version = "0.2.19", features = ["std"] }
+rust_decimal = "1.37.2"
 
-[lints]
-workspace = true
+
 
 [features]
 default = ["overflow_errors", "track_caller", "check_enum_kind", "conv_errors"]
