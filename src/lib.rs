@@ -18,11 +18,11 @@ mod overflow;
 mod conv_fail;
 pub use fastnum::D128;
 pub use fastnum::UD128;
+use fastnum::bint::UInt;
 pub use fastnum::dec128;
 pub use fastnum::decimal::Context;
 pub use fastnum::decimal::ParseError;
 pub use fastnum::decimal::UnsignedDecimal;
-pub use fastnum::int::UInt;
 pub use fastnum::udec128;
 use log::error;
 use std::fmt::Display;
@@ -127,6 +127,8 @@ pub trait Decimals {
 
 #[cfg(test)]
 mod tests {
+    use fastnum::bint::UInt;
+
     use super::*;
     // use num_traits::ConstOne;
     // use std::cmp;
