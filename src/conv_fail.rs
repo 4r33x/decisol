@@ -17,7 +17,7 @@ macro_rules! conv_fail {
 
         #[cfg(feature = "conv_panics")]
         panic!(
-            "{} {} failed at {}:{}:{} value: {}",
+            "{} {} failed at {}:{}:{} value: {} error: {}",
             stringify!($variant),
             stringify!($ops),
             loc.file(),

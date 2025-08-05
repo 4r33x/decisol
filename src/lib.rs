@@ -18,7 +18,7 @@ mod overflow;
 mod conv_fail;
 pub use fastnum::D128;
 pub use fastnum::UD128;
-use fastnum::bint::UInt;
+pub use fastnum::bint::UInt;
 pub use fastnum::dec128;
 pub use fastnum::decimal::Context;
 pub use fastnum::decimal::ParseError;
