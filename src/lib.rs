@@ -276,6 +276,28 @@ mod tests {
         let _liq = token * token;
     }
     #[test]
+    fn mult2() {
+        //amount_out 267800158, swap_fee 2678002, cf 133901
+        let amount_out = TokenLamports::new(267800158, 9);
+        let swap_fee = 2678002;
+        let cf = 133901;
+        let swap_fee_res = amount_out * udec128!(0.0100);
+        let cf_res = amount_out * udec128!(0.0005);
+        assert_eq!(swap_fee_res.amount(), swap_fee);
+        assert_eq!(cf_res.amount(), cf)
+    }
+    #[test]
+    fn div_ceil() {
+        //amount_out 267800158, swap_fee 2678002, cf 133901
+        let amount_out = TokenLamports::new(267800158, 9);
+        let swap_fee = 2678002;
+        let cf = 133901;
+        let swap_fee_res = amount_out.div_ceil(udec128!(0.0100));
+        let cf_res = amount_out.div_ceil(udec128!(0.0005));
+        assert_eq!(swap_fee_res, swap_fee);
+        assert_eq!(cf_res, cf)
+    }
+    #[test]
     fn sub() {
         let sol: Lamports = 100.into();
         let _token = TokenLamports::new(100, 9);
@@ -290,5 +312,12 @@ mod tests {
         let _token = TokenLamports::new(100, 9);
         let _another_token = TokenLamports::new(100, 6);
         let _amount = sol + sol;
+    }
+    #[test]
+    fn rescale() {
+        let r = udec128!(321.123);
+        assert_eq!(udec128!(321.123), r.rescale(3));
+        assert_eq!(udec128!(321.12), r.rescale(2));
+        assert_eq!(udec128!(321.1230), r.rescale(4));
     }
 }

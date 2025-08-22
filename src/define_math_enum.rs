@@ -130,9 +130,72 @@ macro_rules! define_math_enum {
             impl Mul<UD128> for $variant {
                 type Output = $variant;
                 #[cfg_attr(feature = "track_caller", track_caller)]
-                fn mul(self, rhs: UD128) -> Self::Output {
-                    let lhs: UD128 = self.into();
-                    $variant::from_udec_with_kind(lhs * rhs, self.kind())
+                fn mul(self, r: UD128) -> Self::Output {
+                    let scale = 10u128.pow(r.fractional_digits_count() as u32);
+                    #[cfg(feature = "overflow_checks")]
+                    let raw: u128 = match r.digits().try_into() {
+                        Ok(v) => v,
+                        Err(_) => {
+                            overflow!($variant, MulDigits, self, r);
+                            0
+                        },
+                    };
+                    #[cfg(not(feature = "overflow_checks"))]
+                    let raw: u128 = unsafe { r.digits().try_into().unwrap_unchecked() };
+
+                    #[cfg(feature = "overflow_checks")]
+                    let prod = match (self.amount() as u128).checked_mul(raw) {
+                        Some(v) => v/scale,
+                        None => {
+                            overflow!($variant, Mul, self, r);
+                            0
+                        }
+                    };
+
+                    #[cfg(feature = "overflow_checks")]
+                    let prod: u64 = match prod.try_into() {
+                        Ok(v) => v,
+                        Err(_) => {
+                            overflow!($variant, Mult_u128, self, r);
+                            0
+                        },
+                    };
+
+                    #[cfg(not(feature = "overflow_checks"))]
+                    let prod = (self.amount() as u128 * raw) as u64;
+
+
+                    Self::new_from_kind(prod, self.kind())
+                }
+            }
+
+            impl $variant {
+                pub fn div_ceil(self, r: UD128) -> u64 {
+                    let scale = 10u128.pow(r.fractional_digits_count() as u32);
+                    #[cfg(feature = "overflow_checks")]
+                    let raw: u128 = match r.digits().try_into() {
+                        Ok(v) => v,
+                        Err(_) => {
+                            overflow!($variant, DivCeilDigits, self, r);
+                            0
+                        },
+                    };
+
+                    #[cfg(not(feature = "overflow_checks"))]
+                    let raw: u128 = unsafe { r.digits().try_into().unwrap_unchecked() };
+
+                    #[cfg(feature = "overflow_checks")]
+                    let prod = match (self.amount() as u128).checked_mul(raw) {
+                        Some(v) => v,
+                        None => {
+                            overflow!($variant, DivCeilMul, self, r);
+                            0
+                        }
+                    };
+
+                    #[cfg(not(feature = "overflow_checks"))]
+                    let prod = self.amount() as u128 * raw;
+                    prod.div_ceil(scale) as u64
                 }
             }
         )*

@@ -4,27 +4,26 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-log = {version = "0.4.27", optional = true}
-serde = {version = "1.0.219"}
-anyhow = { version = "1.0.98" }
-fastnum = { version = "0.3.2", features = ["serde", "numtraits"]}
+log = { version = "0.4.27", optional = true }
+serde = { version = "1.0.219" }
+anyhow = { version = "1.0.99" }
+fastnum = { version = "0.7.0", features = ["serde", "numtraits"] }
 #num-traits = { version = "0.2.19", features = ["std"] }
 
 [dev-dependencies]
-num-traits = {  version = "0.2.19", features = ["std"] }
+num-traits = { version = "0.2.19", features = ["std"] }
 rust_decimal = "1.37.2"
-
 
 
 [features]
 default = ["overflow_errors", "track_caller", "check_enum_kind", "conv_errors"]
 
-track_caller= []
+track_caller = []
 overflow_checks = []
 overflow_errors = ["dep:log", "overflow_checks"]
 overflow_panics = ["overflow_checks"]
 
-conv_checks=[]
+conv_checks = []
 conv_errors = ["dep:log", "conv_checks"]
 conv_panics = ["conv_checks"]
 

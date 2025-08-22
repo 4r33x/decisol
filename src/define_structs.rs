@@ -52,8 +52,7 @@ macro_rules! define_structs{
             impl From<UD128> for $variant {
                 #[cfg_attr(feature = "track_caller", track_caller)]
                 fn from(value: UD128) -> Self {
-                    let value = value.round(Self::DECIMALS as i16);
-                    let value = value.rescale(Self::DECIMALS as i16);
+                    let value = value.trunc_with_scale(Self::DECIMALS as i16);
                     #[cfg(feature = "conv_checks")]
                     match value.digits().try_into() {
                         Ok(v) => Self(v),

@@ -59,8 +59,8 @@ macro_rules! define_enum {
             }
             #[cfg_attr(feature = "track_caller", track_caller)]
             pub fn from_udec(value: UD128, decimals: u8) -> Self {
-                let value = value.round(decimals as i16);
-                let value = value.rescale(decimals as i16);
+                let value = value.trunc_with_scale(decimals as i16);
+             
                 #[cfg(feature = "conv_checks")]
                 match value.digits().try_into() {
                     Ok(v) => Self::new(v, decimals),
@@ -75,8 +75,7 @@ macro_rules! define_enum {
             #[cfg_attr(feature = "track_caller", track_caller)]
             pub fn from_udec_with_kind(value: UD128, kind: TokenLamportsKind) -> Self {
                 let decimals = kind.decimals();
-                let value = value.round(decimals as i16);
-                let value = value.rescale(decimals as i16);
+                let value = value.trunc_with_scale(decimals as i16);
                 #[cfg(feature = "conv_checks")]
                 match value.digits().try_into() {
                     Ok(v) => Self::new_from_kind(v, kind),
