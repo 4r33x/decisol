@@ -131,6 +131,7 @@ macro_rules! define_math_enum {
                 type Output = $variant;
                 #[cfg_attr(feature = "track_caller", track_caller)]
                 fn mul(self, r: UD128) -> Self::Output {
+                    let r = r.trunc_with_scale(self.decimals() as i16);
                     let scale = 10u128.pow(r.fractional_digits_count() as u32);
                     #[cfg(feature = "overflow_checks")]
                     let raw: u128 = match r.digits().try_into() {
@@ -171,6 +172,7 @@ macro_rules! define_math_enum {
 
             impl $variant {
                 pub fn div_ceil(self, r: UD128) -> u64 {
+                    let r = r.trunc_with_scale(self.decimals() as i16);
                     let scale = 10u128.pow(r.fractional_digits_count() as u32);
                     #[cfg(feature = "overflow_checks")]
                     let raw: u128 = match r.digits().try_into() {
