@@ -49,7 +49,55 @@ macro_rules! define_math_common {
                     lhs / rhs
                 }
             }
+            impl Mul<UD128> for $variant {
+                type Output = $variant;
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn mul(mut self, r: UD128) -> Self::Output {
+                    let f = r.fractional_digits_count();
+                    let raw = r.digits();
+                    let (raw, scale) = if f < 0 { (raw * UInt::TEN.pow((-f) as u32), UInt::ONE) } else { (raw, UInt::TEN.pow(f as u32)) };
+                    let lhs = UInt::from_u64(self.amount());
+                    let res = (lhs * raw) / scale;
 
+                    #[cfg(feature = "overflow_checks")]
+                    let prod: u64 = match res.try_into() {
+                        Ok(v) => v,
+                        Err(_) => {
+                            overflow!($variant, MultConvFromUint, self, r);
+                            0
+                        }
+                    };
+
+                    #[cfg(not(feature = "overflow_checks"))]
+                    let prod = res.try_into().unwrap_or_default();
+                    *self.amount_mut() = prod;
+                    self
+                }
+            }
+            impl $variant {
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                pub fn div_ceil(mut self, r: UD128) -> Self {
+                    let f = r.fractional_digits_count();
+                    let raw = r.digits();
+                    let (raw, scale) = if f < 0 { (raw * UInt::TEN.pow((-f) as u32), UInt::ONE) } else { (raw, UInt::TEN.pow(f as u32)) };
+                    let lhs = UInt::from_u64(self.amount());
+                    let res = (lhs * raw).div_ceil(scale);
+
+                    #[cfg(feature = "overflow_checks")]
+                    let prod: u64 = match res.try_into() {
+                        Ok(v) => v,
+                        Err(_) => {
+                            overflow!($variant, DivCeilConvFromUint, self, r);
+                            0
+                        }
+                    };
+
+                    #[cfg(not(feature = "overflow_checks"))]
+                    let prod = res.try_into().unwrap_or_default();
+                    *self.amount_mut() = prod;
+                    self
+                }
+            }
         )*
 
 

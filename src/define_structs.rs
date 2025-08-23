@@ -25,6 +25,9 @@ macro_rules! define_structs{
                 fn amount(&self) -> u64 {
                     self.0
                 }
+                fn amount_mut(&mut self) -> &mut u64 {
+                    &mut self.0
+                }
                 fn decimals(&self) -> u8 {
                     Self::DECIMALS
                 }
@@ -63,7 +66,7 @@ macro_rules! define_structs{
                     }
 
                     #[cfg(not(feature = "conv_checks"))]
-                    unsafe{Self(value.digits().try_into().unwrap_unchecked())}
+                    Self(value.digits().try_into().unwrap_or_default())
 
                 }
             }

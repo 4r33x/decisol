@@ -60,7 +60,7 @@ macro_rules! define_enum {
             #[cfg_attr(feature = "track_caller", track_caller)]
             pub fn from_udec(value: UD128, decimals: u8) -> Self {
                 let value = value.trunc_with_scale(decimals as i16);
-             
+
                 #[cfg(feature = "conv_checks")]
                 match value.digits().try_into() {
                     Ok(v) => Self::new(v, decimals),
@@ -93,6 +93,11 @@ macro_rules! define_enum {
             fn amount(&self) -> u64 {
                 match self {
                     $( $enum_name::$variant(v) => v.0, )*
+                }
+            }
+            fn amount_mut(&mut self) -> &mut u64 {
+                match self {
+                    $( $enum_name::$variant(v) => &mut v.0, )*
                 }
             }
 

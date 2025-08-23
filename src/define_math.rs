@@ -122,14 +122,6 @@ macro_rules! define_math {
 
                 }
             }
-            impl Mul<UD128> for $variant {
-                type Output = $variant;
-                #[cfg_attr(feature = "track_caller", track_caller)]
-                fn mul(self, rhs: UD128) -> Self::Output {
-                    let lhs: UD128 = self.into();
-                    (lhs * rhs).into()
-                }
-            }
         )*
     };
 }

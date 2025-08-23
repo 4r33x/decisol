@@ -16,6 +16,16 @@ mod define_common;
 mod overflow;
 #[macro_use]
 mod conv_fail;
+
+use std::fmt::Display;
+use std::ops::Add;
+use std::ops::AddAssign;
+use std::ops::Div;
+use std::ops::Mul;
+use std::ops::Sub;
+use std::ops::SubAssign;
+use std::str::FromStr;
+
 pub use fastnum::D128;
 pub use fastnum::UD128;
 pub use fastnum::bint::UInt;
@@ -25,14 +35,7 @@ pub use fastnum::decimal::ParseError;
 pub use fastnum::decimal::UnsignedDecimal;
 pub use fastnum::udec128;
 use log::error;
-use std::fmt::Display;
-use std::ops::Add;
-use std::ops::AddAssign;
-use std::ops::Div;
-use std::ops::Mul;
-use std::ops::Sub;
-use std::ops::SubAssign;
-use std::str::FromStr;
+
 define_structs! {
     TokenLamports0: 0,
     TokenLamports1: 1,
@@ -74,10 +77,10 @@ define_enum! {
     TokenLamports11,
     TokenLamports12,
     TokenLamports13,
-     TokenLamports14,
-     TokenLamports15,
-     TokenLamports16,
-     TokenLamports17,
+    TokenLamports14,
+    TokenLamports15,
+    TokenLamports16,
+    TokenLamports17,
     TokenLamports18,
 }
 define_enum! {
@@ -95,11 +98,11 @@ define_enum! {
     TokenLamports10,
     TokenLamports11,
     TokenLamports12,
-     TokenLamports13,
-     TokenLamports14,
-     TokenLamports15,
-     TokenLamports16,
-     TokenLamports17,
+    TokenLamports13,
+    TokenLamports14,
+    TokenLamports15,
+    TokenLamports16,
+    TokenLamports17,
     TokenLamports18,
     Lamports,
     Usdc,
@@ -113,11 +116,13 @@ define_enum! {
     Usdc,
     Usdt,
 }
+
 pub trait LamportsKind {
     const KIND: TokenLamportsKind;
 }
 pub trait Decisol {
     fn amount(&self) -> u64;
+    fn amount_mut(&mut self) -> &mut u64;
     fn decimals(&self) -> u8;
     fn kind(&self) -> TokenLamportsKind;
 }
@@ -127,12 +132,13 @@ pub trait Decimals {
 
 #[cfg(test)]
 mod tests {
-    use fastnum::bint::UInt;
-
-    use super::*;
     // use num_traits::ConstOne;
     // use std::cmp;
     use std::cmp::Ordering;
+
+    use fastnum::bint::UInt;
+
+    use super::*;
     #[test]
     fn test_rust_decimal() {
         let rust_dec = rust_decimal::Decimal::from_f64_retain(0.999405000).unwrap();
@@ -214,11 +220,7 @@ mod tests {
     }
     #[test]
     fn recip() {
-        let fast_num = UD128::from_parts(
-            UInt::from_str("66100475480188776883681620311725717740").unwrap(),
-            -40,
-            Context::default(),
-        );
+        let fast_num = UD128::from_parts(UInt::from_str("66100475480188776883681620311725717740").unwrap(), -40, Context::default());
         let recip_by_hand = UD128::ONE / fast_num;
         println!("recip_by_hand: {recip_by_hand}");
         let recip = fast_num.recip();
@@ -266,6 +268,16 @@ mod tests {
     }
 
     #[test]
+    fn digits() {
+        let e = udec128!(5e9);
+
+        let digits = e.digits();
+        let fractional = e.fractional_digits_count();
+        assert_eq!(5, digits.to_u128().unwrap());
+        assert_eq!(-9, fractional)
+    }
+
+    #[test]
     fn mult() {
         let sol: Lamports = 100.into();
         let token = TokenLamports::new(100, 9);
@@ -279,8 +291,8 @@ mod tests {
     fn mult2() {
         //amount_out 267800158, swap_fee 2678002, cf 133901
         let amount_out = TokenLamports::new(267800158, 9);
-        let swap_fee = 2678002;
-        let cf = 133901;
+        let swap_fee = 2678001;
+        let cf = 133900;
         let swap_fee_res = amount_out * udec128!(0.0100);
         let cf_res = amount_out * udec128!(0.0005);
         assert_eq!(swap_fee_res.amount(), swap_fee);
