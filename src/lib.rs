@@ -136,6 +136,7 @@ mod tests {
     // use std::cmp;
     use std::cmp::Ordering;
 
+    use fastnum::U64;
     use fastnum::bint::UInt;
 
     use super::*;
@@ -261,9 +262,14 @@ mod tests {
     #[test]
     fn conv() {
         const LAMPORTS_MAX_DECIMAL: UD128 = udec128!(18446744073.11111111111111111111111);
-        let decimal_max = UD128::MAX;
         let res = Lamports::from(LAMPORTS_MAX_DECIMAL);
         println!("{res}");
+    }
+    #[cfg(feature = "conv_panics")]
+    #[should_panic]
+    #[test]
+    fn conv_should_panic() {
+        let decimal_max = UD128::MAX;
         let _v = Lamports::from(decimal_max);
     }
 
@@ -299,6 +305,20 @@ mod tests {
         assert_eq!(cf_res.amount(), cf)
     }
     #[test]
+    fn mult3() {
+        //amount_out 267800158, swap_fee 2678002, cf 133901
+        let amount_out = TokenLamports::new(u64::MAX, 9);
+        let coef = udec128!(0.99999999999999999999999999999999999999);
+        let res = amount_out * coef;
+    }
+    #[test]
+    fn div_ceil2() {
+        //amount_out 267800158, swap_fee 2678002, cf 133901
+        let amount_out = TokenLamports::new(u64::MAX, 9);
+        let coef = udec128!(0.99999999999999999999999999999999999999);
+        let res = amount_out.div_ceil(coef);
+    }
+    #[test]
     fn div_ceil() {
         //amount_out 267800158, swap_fee 2678002, cf 133901
         let amount_out = TokenLamports::new(267800158, 9);
@@ -309,6 +329,7 @@ mod tests {
         assert_eq!(swap_fee_res, swap_fee);
         assert_eq!(cf_res, cf)
     }
+
     #[test]
     fn sub() {
         let sol: Lamports = 100.into();
@@ -316,6 +337,11 @@ mod tests {
         let another_token = TokenLamports::new(100, 6);
         let _amount = sol + sol;
         let _amount_zero = another_token - another_token;
+    }
+    #[cfg(feature = "conv_panics")]
+    #[should_panic]
+    #[test]
+    fn sub_should_panic() {
         let _should_panic = Lamports::new(1) - Lamports::new(10);
     }
     #[test]

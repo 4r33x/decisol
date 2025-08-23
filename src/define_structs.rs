@@ -61,12 +61,12 @@ macro_rules! define_structs{
                         Ok(v) => Self(v),
                         Err(e) => {
                             conv_fail!($variant, FromUD128, value, e);
-                            Default::default()
+                            Self(u64::MAX)
                         },
                     }
 
                     #[cfg(not(feature = "conv_checks"))]
-                    Self(value.digits().try_into().unwrap_or_default())
+                    Self(value.digits().try_into().unwrap_or_else(u64::MAX))
 
                 }
             }

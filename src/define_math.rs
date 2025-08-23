@@ -9,7 +9,7 @@ macro_rules! define_math {
                 fn sub(self, rhs: Self) -> Self::Output {
                     #[cfg(feature = "overflow_checks")]
                     if self<rhs {
-                        overflow!($variant, SubSelf, self, rhs);
+                        overflow!($variant, SubSelf, self.amount(), rhs.amount());
                         return Self::new(0);
                     }
                     Self::new(self.amount() - rhs.amount())
@@ -21,7 +21,7 @@ macro_rules! define_math {
                 fn sub(self, rhs: u64) -> Self::Output {
                     #[cfg(feature = "overflow_checks")]
                     if self.amount() < rhs {
-                        overflow!($variant, SubU64, self, rhs);
+                        overflow!($variant, SubU64, self.amount(), rhs);
                         return Self::new(0);
                     }
                     Self::new(self.amount() - rhs)
@@ -33,7 +33,7 @@ macro_rules! define_math {
                 fn sub(self, rhs: $variant) -> Self::Output {
                     #[cfg(feature = "overflow_checks")]
                     if self < rhs.amount() {
-                        overflow!($variant, U64Sub, self, rhs);
+                        overflow!($variant, U64Sub, self, rhs.amount());
                         return $variant::new(0);
                     }
                     $variant::new(self - rhs.amount())
@@ -45,7 +45,7 @@ macro_rules! define_math {
                     #[cfg(feature = "overflow_checks")]
                     {
                         if self.amount() < rhs.amount() {
-                            overflow!($variant, SubAssign, self, rhs);
+                            overflow!($variant, SubAssign, self.amount(), rhs.amount());
                         }
                         *self = Self::new(0);
                     }
@@ -63,7 +63,7 @@ macro_rules! define_math {
                     {
                         let (res, over) = self.amount().overflowing_add(rhs.amount());
                         if over {
-                            overflow!($variant, AddSelf, self, rhs);
+                            overflow!($variant, AddSelf, self.amount(), rhs.amount());
                         }
                         return Self::new(res);
                     }
@@ -80,7 +80,7 @@ macro_rules! define_math {
                     {
                         let (res, over) = self.amount().overflowing_add(rhs);
                         if over {
-                            overflow!($variant, AddU64, self, rhs);
+                            overflow!($variant, AddU64, self.amount(), rhs);
                         }
                         return Self::new(res);
                     }

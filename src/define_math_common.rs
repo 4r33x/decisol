@@ -53,9 +53,10 @@ macro_rules! define_math_common {
                 type Output = $variant;
                 #[cfg_attr(feature = "track_caller", track_caller)]
                 fn mul(mut self, r: UD128) -> Self::Output {
+                    let r = r.trunc_with_scale(9);
                     let f = r.fractional_digits_count();
                     let raw = r.digits();
-                    let (raw, scale) = if f < 0 { (raw * UInt::TEN.pow((-f) as u32), UInt::ONE) } else { (raw, UInt::TEN.pow(f as u32)) };
+                    let (raw, scale) = if f < 0 {  (raw * UInt::TEN.pow( f as u32), UInt::ONE) } else { (raw, UInt::TEN.pow(f as u32)) };
                     let lhs = UInt::from_u64(self.amount());
                     let res = (lhs * raw) / scale;
 
@@ -77,6 +78,7 @@ macro_rules! define_math_common {
             impl $variant {
                 #[cfg_attr(feature = "track_caller", track_caller)]
                 pub fn div_ceil(mut self, r: UD128) -> Self {
+                    let r = r.trunc_with_scale(9);
                     let f = r.fractional_digits_count();
                     let raw = r.digits();
                     let (raw, scale) = if f < 0 { (raw * UInt::TEN.pow((-f) as u32), UInt::ONE) } else { (raw, UInt::TEN.pow(f as u32)) };
