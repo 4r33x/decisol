@@ -10,7 +10,7 @@ macro_rules! define_math {
                     #[cfg(feature = "overflow_checks")]
                     if self<rhs {
                         overflow!($variant, SubSelf, self.amount(), rhs.amount());
-                        return Self::new(0);
+                        return Self::new(0u64);
                     }
                     Self::new(self.amount() - rhs.amount())
                 }
@@ -22,7 +22,7 @@ macro_rules! define_math {
                     #[cfg(feature = "overflow_checks")]
                     if self.amount() < rhs {
                         overflow!($variant, SubU64, self.amount(), rhs);
-                        return Self::new(0);
+                        return Self::new(0u64);
                     }
                     Self::new(self.amount() - rhs)
                 }
@@ -34,7 +34,7 @@ macro_rules! define_math {
                     #[cfg(feature = "overflow_checks")]
                     if self < rhs.amount() {
                         overflow!($variant, U64Sub, self, rhs.amount());
-                        return $variant::new(0);
+                        return $variant::new(0u64);
                     }
                     $variant::new(self - rhs.amount())
                 }
@@ -47,7 +47,7 @@ macro_rules! define_math {
                         if self.amount() < rhs.amount() {
                             overflow!($variant, SubAssign, self.amount(), rhs.amount());
                         }
-                        *self = Self::new(0);
+                        *self = Self::new(0u64);
                     }
                     #[cfg(not(feature = "overflow_checks"))]
                     {

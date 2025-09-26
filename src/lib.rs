@@ -1,3 +1,4 @@
+#![allow(unreachable_code)]
 mod lamports;
 mod token_lamports;
 #[macro_use]
@@ -204,6 +205,46 @@ pub trait Decisol {
     fn as_u128(&self) -> u128;
 }
 
+pub trait ValidAmount: Copy {
+    fn to_u64(self) -> u64;
+    fn to_u128(self) -> u128;
+}
+
+// Implement for u64
+impl ValidAmount for u64 {
+    fn to_u64(self) -> u64 {
+        self
+    }
+
+    fn to_u128(self) -> u128 {
+        self as u128
+    }
+}
+
+// Implement for u128
+impl ValidAmount for u128 {
+    #[cfg_attr(feature = "track_caller", track_caller)]
+    fn to_u64(self) -> u64 {
+        #[cfg(feature = "overflow_errors")]
+        {
+            match self.try_into() {
+                Ok(v) => v,
+                Err(_) => {
+                    overflow!(ValidAmount, to_u64, self, self);
+                    u64::MAX
+                }
+            }
+        }
+        #[cfg(not(feature = "overflow_errors"))]
+        {
+            return self as u64;
+        }
+    }
+
+    fn to_u128(self) -> u128 {
+        self
+    }
+}
 #[cfg(test)]
 mod tests {
     use std::cmp::Ordering;
@@ -357,8 +398,8 @@ mod tests {
     #[test]
     fn mult() {
         let sol: Lamports = 100.into();
-        let token = TokenLamports::new(100, 9);
-        let another_token = TokenLamports::new(100, 6);
+        let token = TokenLamports::new(100u64, 9);
+        let another_token = TokenLamports::new(100u64, 6);
         let _liq = token * another_token;
         let _liq = sol * token;
         let _liq = sol * sol;
@@ -367,7 +408,7 @@ mod tests {
     #[test]
     fn mult2() {
         //amount_out 267800158, swap_fee 2678002, cf 133901
-        let amount_out = TokenLamports::new(267800158, 9);
+        let amount_out = TokenLamports::new(267800158u64, 9);
         let swap_fee = 2678001;
         let cf = 133900;
         let swap_fee_res = amount_out * udec128!(0.0100);
@@ -380,19 +421,19 @@ mod tests {
         //amount_out 267800158, swap_fee 2678002, cf 133901
         let amount_out = TokenLamports::new(u64::MAX, 9);
         let coef = udec128!(0.99999999999999999999999999999999999999);
-        let res = amount_out * coef;
+        let _res = amount_out * coef;
     }
     #[test]
     fn div_ceil2() {
         //amount_out 267800158, swap_fee 2678002, cf 133901
         let amount_out = TokenLamports::new(u64::MAX, 9);
         let coef = udec128!(0.99999999999999999999999999999999999999);
-        let res = amount_out.div_ceil(coef);
+        let _res = amount_out.div_ceil(coef);
     }
     #[test]
     fn div_ceil() {
         //amount_out 267800158, swap_fee 2678002, cf 133901
-        let amount_out = TokenLamports::new(267800158, 9);
+        let amount_out = TokenLamports::new(267800158u64, 9);
         let swap_fee = 2678002;
         let cf = 133901;
         let swap_fee_res = amount_out.div_ceil(udec128!(0.0100));
@@ -404,8 +445,8 @@ mod tests {
     #[test]
     fn sub() {
         let sol: Lamports = 100.into();
-        let _token = TokenLamports::new(100, 9);
-        let another_token = TokenLamports::new(100, 6);
+        let _token = TokenLamports::new(100u64, 9);
+        let another_token = TokenLamports::new(100u64, 6);
         let _amount = sol + sol;
         let _amount_zero = another_token - another_token;
     }
@@ -413,13 +454,13 @@ mod tests {
     #[should_panic]
     #[test]
     fn sub_should_panic() {
-        let _should_panic = Lamports::new(1) - Lamports::new(10);
+        let _should_panic = Lamports::new(1u64) - Lamports::new(10u64);
     }
     #[test]
     fn add() {
         let sol: Lamports = 100.into();
-        let _token = TokenLamports::new(100, 9);
-        let _another_token = TokenLamports::new(100, 6);
+        let _token = TokenLamports::new(100u64, 9);
+        let _another_token = TokenLamports::new(100u64, 6);
         let _amount = sol + sol;
     }
     #[test]

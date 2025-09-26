@@ -47,7 +47,8 @@ macro_rules! define_enum {
             }
 
             #[cfg_attr(feature = "track_caller", track_caller)]
-            pub fn new(amount: u64, decimals: u8) -> Self {
+            pub fn new<T: ValidAmount>(amount: T, decimals: u8) -> Self {
+                let amount = amount.to_u64();
                 #[allow(unreachable_patterns)]
                 match decimals {
                     $(
@@ -57,14 +58,13 @@ macro_rules! define_enum {
                         #[cfg(feature = "overflow_errors")]
                         {
                             conv_fail!(TokenLamports, TokenLamportsNew, decimals, format!("Failed due to invalid decimals, with inner value: {amount}"));
-
                         }
                         #[cfg(feature = "overflow_panics")]
                         {
                             let loc = std::panic::Location::caller();
                             panic!("{}::new failed at {}:{}:{} - invalid decimals: {}", stringify!($enum_name), loc.file(),loc.line(), loc.column(), decimals)
                         }
-                        return Self::new(0, decimals);
+                        return Self::new(0u64, decimals);
                     },
                 }
             }
@@ -75,10 +75,10 @@ macro_rules! define_enum {
 
                 #[cfg(feature = "conv_checks")]
                 match value.digits().try_into() {
-                    Ok(v) => Self::new(v, decimals),
+                    Ok(v) => Self::new::<u64>(v, decimals),
                     Err(e) => {
                         conv_fail!($enum_name, FromUD128, value, e);
-                        Self::new(0, decimals)
+                        Self::new(0u64, decimals)
                     },
                 }
                 #[cfg(not(feature = "conv_checks"))]

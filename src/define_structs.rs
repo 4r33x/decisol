@@ -10,8 +10,8 @@ macro_rules! define_structs{
             pub struct $variant(pub u64);
 
             impl $variant {
-                pub const fn new(amount: u64) -> Self {
-                    Self(amount)
+                pub fn new<T: ValidAmount>(amount: T) -> Self {
+                    Self(amount.to_u64())
                 }
             }
 
