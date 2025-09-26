@@ -200,9 +200,6 @@ pub trait Decisol {
     fn amount_mut(&mut self) -> &mut u64;
     fn decimals(&self) -> u8;
 }
-trait Decimals {
-    const DECIMALS: u8;
-}
 
 #[cfg(test)]
 mod tests {

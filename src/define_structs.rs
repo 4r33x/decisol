@@ -15,7 +15,7 @@ macro_rules! define_structs{
                 }
             }
 
-            impl Decimals for $variant {
+            impl $variant {
                 const DECIMALS: u8 = $decimals;
             }
 

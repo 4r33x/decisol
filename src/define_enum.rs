@@ -51,7 +51,7 @@ macro_rules! define_enum {
                 #[allow(unreachable_patterns)]
                 match decimals {
                     $(
-                        <$variant as Decimals>::DECIMALS => Self::$variant($variant(amount)),
+                        $variant::DECIMALS => Self::$variant($variant(amount)),
                     )*
                     _ => {
                         #[cfg(feature = "overflow_errors")]
