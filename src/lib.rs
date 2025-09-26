@@ -57,9 +57,11 @@ define_structs! {
     TokenLamports17: 17,
     TokenLamports18: 18,
     Lamports: 9,
+    Wsol: 9,
     Usdc: 6,
+    Usd1: 6,
     Usdt: 6,
-    Usd: 6,
+
 }
 define_enum! {
     TokenLamports,
@@ -105,15 +107,18 @@ define_enum! {
     TokenLamports17,
     TokenLamports18,
     Lamports,
+    Wsol,
     Usdc,
+    Usd1,
     Usdt,
-    Usd,
+
 }
 define_enum! {
     QuoteLamports,
     Lamports,
-    Usd,
+    Wsol,
     Usdc,
+    Usd1,
     Usdt,
 }
 
@@ -132,11 +137,8 @@ pub trait Decimals {
 
 #[cfg(test)]
 mod tests {
-    // use num_traits::ConstOne;
-    // use std::cmp;
     use std::cmp::Ordering;
 
-    use fastnum::U64;
     use fastnum::bint::UInt;
 
     use super::*;
