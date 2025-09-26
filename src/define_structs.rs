@@ -18,9 +18,7 @@ macro_rules! define_structs{
             impl Decimals for $variant {
                 const DECIMALS: u8 = $decimals;
             }
-            impl LamportsKind for $variant {
-                const KIND: TokenLamportsKind = TokenLamportsKind::$variant;
-            }
+
             impl Decisol for $variant {
                 fn amount(&self) -> u64 {
                     self.0
@@ -30,9 +28,6 @@ macro_rules! define_structs{
                 }
                 fn decimals(&self) -> u8 {
                     Self::DECIMALS
-                }
-                fn kind(&self) -> TokenLamportsKind {
-                    Self::KIND
                 }
             }
             impl From<u64> for $variant {
@@ -72,21 +67,5 @@ macro_rules! define_structs{
             }
 
         )*
-        #[derive(
-            Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord,
-            serde::Deserialize, serde::Serialize,
-        )]
-        pub enum TokenLamportsKind {
-            $(
-                $variant,
-            )*
-        }
-        impl TokenLamportsKind {
-            pub const fn decimals(&self) -> u8 {
-                match self {
-                $( TokenLamportsKind::$variant => $variant::DECIMALS, )*
-                }
-            }
-        }
     };
 }

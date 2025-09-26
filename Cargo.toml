@@ -10,6 +10,7 @@ anyhow = { version = "1" }
 fastnum = { version = "0.7.2", features = ["serde", "numtraits"] }
 num-traits = { version = "0.2", features = ["std"] }
 
+
 [dev-dependencies]
 rust_decimal = "1.38.0"
 

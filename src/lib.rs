@@ -64,7 +64,7 @@ define_structs! {
 
 }
 define_enum! {
-    TokenLamports,
+    TokenLamports, TokenLamportsKind,
     TokenLamports0,
     TokenLamports1,
     TokenLamports2,
@@ -86,7 +86,7 @@ define_enum! {
     TokenLamports18,
 }
 define_enum! {
-    SolanaLamports,
+    SolanaLamports,  SolanaLamportsKind,
     TokenLamports0,
     TokenLamports1,
     TokenLamports2,
@@ -114,7 +114,7 @@ define_enum! {
 
 }
 define_enum! {
-    QuoteLamports,
+    QuoteLamports,  QuoteLamportsKind,
     Lamports,
     Wsol,
     Usdc,
@@ -122,14 +122,10 @@ define_enum! {
     Usdt,
 }
 
-pub trait LamportsKind {
-    const KIND: TokenLamportsKind;
-}
 pub trait Decisol {
     fn amount(&self) -> u64;
     fn amount_mut(&mut self) -> &mut u64;
     fn decimals(&self) -> u8;
-    fn kind(&self) -> TokenLamportsKind;
 }
 pub trait Decimals {
     const DECIMALS: u8;

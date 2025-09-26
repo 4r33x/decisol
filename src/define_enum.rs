@@ -1,6 +1,6 @@
 macro_rules! define_enum {
     (
-        $enum_name:ident, $( $variant:ident ),* $(,)?
+        $enum_name:ident, $kind_name:ident, $( $variant:ident ),* $(,)?
     ) => {
 
         $(
@@ -20,7 +20,32 @@ macro_rules! define_enum {
                 $variant($variant),
             )*
         }
+
+        #[derive(
+            Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord,
+            serde::Deserialize, serde::Serialize,
+        )]
+        pub enum $kind_name {
+            $(
+                $variant,
+            )*
+        }
+
+        impl $kind_name {
+            pub const fn decimals(&self) -> u8 {
+                match self {
+                    $( $kind_name ::$variant => $variant::DECIMALS, )*
+                }
+            }
+        }
+
         impl $enum_name {
+            pub const fn kind(&self) -> $kind_name  {
+                match self {
+                    $( $enum_name::$variant(_) => $kind_name ::$variant, )*
+                }
+            }
+
             #[cfg_attr(feature = "track_caller", track_caller)]
             pub fn new(amount: u64, decimals: u8) -> Self {
                 #[allow(unreachable_patterns)]
@@ -39,24 +64,11 @@ macro_rules! define_enum {
                             let loc = std::panic::Location::caller();
                             panic!("{}::new failed at {}:{}:{} - invalid decimals: {}", stringify!($enum_name), loc.file(),loc.line(), loc.column(), decimals)
                         }
-                        return Self::new(0, 9);
+                        return Self::new(0, decimals);
                     },
                 }
             }
-            #[cfg_attr(feature = "track_caller", track_caller)]
-            pub fn new_from_kind(amount: u64, kind: TokenLamportsKind) -> Self {
-                match kind {
-                    $(
-                        TokenLamportsKind::$variant => Self::$variant($variant(amount)),
-                    )*
-                    #[allow(unreachable_patterns)]
-                    _ => {
-                        let loc = std::panic::Location::caller();
-                        panic!("{}::new failed at {}:{}:{} - invalid kind: {:?}", stringify!($enum_name), loc.file(),
-                        loc.line(), loc.column(), kind)
-                    },
-                }
-            }
+
             #[cfg_attr(feature = "track_caller", track_caller)]
             pub fn from_udec(value: UD128, decimals: u8) -> Self {
                 let value = value.trunc_with_scale(decimals as i16);
@@ -72,8 +84,23 @@ macro_rules! define_enum {
                 #[cfg(not(feature = "conv_checks"))]
                 unsafe{Self::new(value.digits().try_into().unwrap_unchecked(), decimals)}
             }
+
             #[cfg_attr(feature = "track_caller", track_caller)]
-            pub fn from_udec_with_kind(value: UD128, kind: TokenLamportsKind) -> Self {
+            pub fn new_from_kind(amount: u64, kind: $kind_name) -> Self {
+                match kind {
+                    $(
+                        $kind_name ::$variant => Self::$variant($variant(amount)),
+                    )*
+                    #[allow(unreachable_patterns)]
+                    _ => {
+                        let loc = std::panic::Location::caller();
+                        panic!("{}::new failed at {}:{}:{} - invalid kind: {:?}", stringify!($enum_name), loc.file(),
+                        loc.line(), loc.column(), kind)
+                    },
+                }
+            }
+            #[cfg_attr(feature = "track_caller", track_caller)]
+            pub fn from_udec_with_kind(value: UD128, kind: $kind_name) -> Self {
                 let decimals = kind.decimals();
                 let value = value.trunc_with_scale(decimals as i16);
                 #[cfg(feature = "conv_checks")]
@@ -104,11 +131,6 @@ macro_rules! define_enum {
             fn decimals(&self) -> u8 {
                 match self {
                     $( $enum_name::$variant(_) => $variant::DECIMALS, )*
-                }
-            }
-            fn kind(&self) -> TokenLamportsKind {
-                match self {
-                    $( $enum_name::$variant(_) => <$variant as LamportsKind>::KIND, )*
                 }
             }
         }
