@@ -399,8 +399,8 @@ mod tests {
     #[test]
     fn mult() {
         let sol: Lamports = 100.into();
-        let token = TokenLamports::new(100u64, 9);
-        let another_token = TokenLamports::new(100u64, 6);
+        let token = TokenLamports::new_from_decimals(100u64, 9);
+        let another_token = TokenLamports::new_from_decimals(100u64, 6);
         let _liq = token * another_token;
         let _liq = sol * token;
         let _liq = sol * sol;
@@ -409,7 +409,7 @@ mod tests {
     #[test]
     fn mult2() {
         //amount_out 267800158, swap_fee 2678002, cf 133901
-        let amount_out = TokenLamports::new(267800158u64, 9);
+        let amount_out = TokenLamports::new_from_decimals(267800158u64, 9);
         let swap_fee = 2678001;
         let cf = 133900;
         let swap_fee_res = amount_out * udec128!(0.0100);
@@ -420,21 +420,21 @@ mod tests {
     #[test]
     fn mult3() {
         //amount_out 267800158, swap_fee 2678002, cf 133901
-        let amount_out = TokenLamports::new(u64::MAX, 9);
+        let amount_out = TokenLamports::new_from_decimals(u64::MAX, 9);
         let coef = udec128!(0.99999999999999999999999999999999999999);
         let _res = amount_out * coef;
     }
     #[test]
     fn div_ceil2() {
         //amount_out 267800158, swap_fee 2678002, cf 133901
-        let amount_out = TokenLamports::new(u64::MAX, 9);
+        let amount_out = TokenLamports::new_from_decimals(u64::MAX, 9);
         let coef = udec128!(0.99999999999999999999999999999999999999);
         let _res = amount_out.div_ceil(coef);
     }
     #[test]
     fn div_ceil() {
         //amount_out 267800158, swap_fee 2678002, cf 133901
-        let amount_out = TokenLamports::new(267800158u64, 9);
+        let amount_out = TokenLamports::new_from_decimals(267800158u64, 9);
         let swap_fee = 2678002;
         let cf = 133901;
         let swap_fee_res = amount_out.div_ceil(udec128!(0.0100));
@@ -446,8 +446,8 @@ mod tests {
     #[test]
     fn sub() {
         let sol: Lamports = 100.into();
-        let _token = TokenLamports::new(100u64, 9);
-        let another_token = TokenLamports::new(100u64, 6);
+        let _token = TokenLamports::new_from_decimals(100u64, 9);
+        let another_token = TokenLamports::new_from_decimals(100u64, 6);
         let _amount = sol + sol;
         let _amount_zero = another_token - another_token;
     }
@@ -460,8 +460,8 @@ mod tests {
     #[test]
     fn add() {
         let sol: Lamports = 100.into();
-        let _token = TokenLamports::new(100u64, 9);
-        let _another_token = TokenLamports::new(100u64, 6);
+        let _token = TokenLamports::new_from_decimals(100u64, 9);
+        let _another_token = TokenLamports::new_from_decimals(100u64, 6);
         let _amount = sol + sol;
     }
     #[test]

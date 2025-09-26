@@ -45,9 +45,39 @@ macro_rules! define_enum {
                     $( $enum_name::$variant(_) => $kind_name ::$variant, )*
                 }
             }
+            #[cfg_attr(feature = "track_caller", track_caller)]
+            pub fn new<T: ValidAmount>(amount: T, kind: $kind_name) -> Self {
+                let amount = amount.to_u64();
+                match kind {
+                    $(
+                        $kind_name ::$variant => Self::$variant($variant(amount)),
+                    )*
+                    #[allow(unreachable_patterns)]
+                    _ => {
+                        let loc = std::panic::Location::caller();
+                        panic!("{}::new failed at {}:{}:{} - invalid kind: {:?}", stringify!($enum_name), loc.file(),
+                        loc.line(), loc.column(), kind)
+                    },
+                }
+            }
+            #[cfg_attr(feature = "track_caller", track_caller)]
+            pub fn from_udec(value: UD128, kind: $kind_name) -> Self {
+                let decimals = kind.decimals();
+                let value = value.trunc_with_scale(decimals as i16);
+                #[cfg(feature = "conv_checks")]
+                match value.digits().try_into() {
+                    Ok(v) => Self::new::<u64>(v, kind),
+                    Err(e) => {
+                        conv_fail!($enum_name, FromUD128, value, e);
+                        Self::new::<u64>(0, kind)
+                    },
+                }
+                #[cfg(not(feature = "conv_checks"))]
+                unsafe{Self::new(value.digits().try_into().unwrap_unchecked(), kind)}
+            }
 
             #[cfg_attr(feature = "track_caller", track_caller)]
-            pub fn new<T: ValidAmount>(amount: T, decimals: u8) -> Self {
+            pub fn new_from_decimals<T: ValidAmount>(amount: T, decimals: u8) -> Self {
                 let amount = amount.to_u64();
                 #[allow(unreachable_patterns)]
                 match decimals {
@@ -64,57 +94,28 @@ macro_rules! define_enum {
                             let loc = std::panic::Location::caller();
                             panic!("{}::new failed at {}:{}:{} - invalid decimals: {}", stringify!($enum_name), loc.file(),loc.line(), loc.column(), decimals)
                         }
-                        return Self::new(0u64, decimals);
+                        return Self::new_from_decimals(0u64, decimals);
                     },
                 }
             }
 
             #[cfg_attr(feature = "track_caller", track_caller)]
-            pub fn from_udec(value: UD128, decimals: u8) -> Self {
+            pub fn from_udec_and_decimals(value: UD128, decimals: u8) -> Self {
                 let value = value.trunc_with_scale(decimals as i16);
 
                 #[cfg(feature = "conv_checks")]
                 match value.digits().try_into() {
-                    Ok(v) => Self::new::<u64>(v, decimals),
+                    Ok(v) => Self::new_from_decimals::<u64>(v, decimals),
                     Err(e) => {
                         conv_fail!($enum_name, FromUD128, value, e);
-                        Self::new(0u64, decimals)
+                        Self::new_from_decimals(0u64, decimals)
                     },
                 }
                 #[cfg(not(feature = "conv_checks"))]
-                unsafe{Self::new(value.digits().try_into().unwrap_unchecked(), decimals)}
+                unsafe{Self::new_from_decimals(value.digits().try_into().unwrap_unchecked(), decimals)}
             }
 
-            #[cfg_attr(feature = "track_caller", track_caller)]
-            pub fn new_from_kind<T: ValidAmount>(amount: T, kind: $kind_name) -> Self {
-                let amount = amount.to_u64();
-                match kind {
-                    $(
-                        $kind_name ::$variant => Self::$variant($variant(amount)),
-                    )*
-                    #[allow(unreachable_patterns)]
-                    _ => {
-                        let loc = std::panic::Location::caller();
-                        panic!("{}::new failed at {}:{}:{} - invalid kind: {:?}", stringify!($enum_name), loc.file(),
-                        loc.line(), loc.column(), kind)
-                    },
-                }
-            }
-            #[cfg_attr(feature = "track_caller", track_caller)]
-            pub fn from_udec_with_kind(value: UD128, kind: $kind_name) -> Self {
-                let decimals = kind.decimals();
-                let value = value.trunc_with_scale(decimals as i16);
-                #[cfg(feature = "conv_checks")]
-                match value.digits().try_into() {
-                    Ok(v) => Self::new_from_kind::<u64>(v, kind),
-                    Err(e) => {
-                        conv_fail!($enum_name, FromUD128, value, e);
-                        Self::new_from_kind::<u64>(0, kind)
-                    },
-                }
-                #[cfg(not(feature = "conv_checks"))]
-                unsafe{Self::new_from_kind(value.digits().try_into().unwrap_unchecked(), kind)}
-            }
+
         }
 
         impl Decisol for $enum_name {
