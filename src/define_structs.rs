@@ -16,7 +16,7 @@ macro_rules! define_structs{
             }
 
             impl $variant {
-                const DECIMALS: u8 = $decimals;
+                pub const DECIMALS: u8 = $decimals;
             }
 
             impl Decisol for $variant {
