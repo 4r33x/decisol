@@ -113,6 +113,79 @@ define_enum! {
     Usdt,
 
 }
+
+impl SolanaLamportsKind {
+    pub fn is_quote(&self) -> bool {
+        match self {
+            Self::TokenLamports0
+            | Self::TokenLamports1
+            | Self::TokenLamports2
+            | Self::TokenLamports3
+            | Self::TokenLamports4
+            | Self::TokenLamports5
+            | Self::TokenLamports6
+            | Self::TokenLamports7
+            | Self::TokenLamports8
+            | Self::TokenLamports9
+            | Self::TokenLamports10
+            | Self::TokenLamports11
+            | Self::TokenLamports12
+            | Self::TokenLamports13
+            | Self::TokenLamports14
+            | Self::TokenLamports15
+            | Self::TokenLamports16
+            | Self::TokenLamports17
+            | Self::TokenLamports18 => false,
+            Self::Lamports | Self::Wsol | Self::Usdc | Self::Usd1 | Self::Usdt => true,
+        }
+    }
+    pub fn quote_kind(&self) -> Option<QuoteKind> {
+        match self {
+            Self::TokenLamports0
+            | Self::TokenLamports1
+            | Self::TokenLamports2
+            | Self::TokenLamports3
+            | Self::TokenLamports4
+            | Self::TokenLamports5
+            | Self::TokenLamports6
+            | Self::TokenLamports7
+            | Self::TokenLamports8
+            | Self::TokenLamports9
+            | Self::TokenLamports10
+            | Self::TokenLamports11
+            | Self::TokenLamports12
+            | Self::TokenLamports13
+            | Self::TokenLamports14
+            | Self::TokenLamports15
+            | Self::TokenLamports16
+            | Self::TokenLamports17
+            | Self::TokenLamports18 => None,
+            Self::Lamports | Self::Wsol => Some(QuoteKind::Sol),
+            Self::Usdc | Self::Usd1 | Self::Usdt => Some(QuoteKind::Usd),
+        }
+    }
+}
+impl QuoteLamportsKind {
+    pub fn quote_kind(&self) -> QuoteKind {
+        match self {
+            Self::Lamports | Self::Wsol => QuoteKind::Sol,
+            Self::Usdc | Self::Usd1 | Self::Usdt => QuoteKind::Usd,
+        }
+    }
+}
+pub enum QuoteKind {
+    Usd,
+    Sol,
+}
+impl QuoteKind {
+    pub const fn decimals(&self) -> u8 {
+        match self {
+            QuoteKind::Usd => 6,
+            QuoteKind::Sol => 9,
+        }
+    }
+}
+
 define_enum! {
     QuoteLamports,  QuoteLamportsKind,
     Lamports,
@@ -127,7 +200,7 @@ pub trait Decisol {
     fn amount_mut(&mut self) -> &mut u64;
     fn decimals(&self) -> u8;
 }
-pub trait Decimals {
+trait Decimals {
     const DECIMALS: u8;
 }
 
