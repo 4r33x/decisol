@@ -212,10 +212,11 @@ pub trait ValidAmount: Copy {
 
 // Implement for u64
 impl ValidAmount for u64 {
+    #[inline(always)]
     fn to_u64(self) -> u64 {
         self
     }
-
+    #[inline(always)]
     fn to_u128(self) -> u128 {
         self as u128
     }
@@ -240,7 +241,7 @@ impl ValidAmount for u128 {
             return self as u64;
         }
     }
-
+    #[inline(always)]
     fn to_u128(self) -> u128 {
         self
     }
