@@ -17,6 +17,7 @@ mod overflow;
 #[macro_use]
 mod conv_fail;
 
+use std::cmp::Ordering;
 use std::fmt::Display;
 use std::ops::Add;
 use std::ops::AddAssign;
@@ -199,6 +200,8 @@ pub trait Decisol {
     fn amount(&self) -> u64;
     fn amount_mut(&mut self) -> &mut u64;
     fn decimals(&self) -> u8;
+    fn to_u128(&self) -> u128;
+    fn as_u128(&self) -> u128;
 }
 
 #[cfg(test)]

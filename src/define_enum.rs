@@ -133,6 +133,16 @@ macro_rules! define_enum {
                     $( $enum_name::$variant(_) => $variant::DECIMALS, )*
                 }
             }
+            fn to_u128(&self) -> u128 {
+                match self {
+                    $( $enum_name::$variant(v) => v.to_u128(), )*
+                }
+            }
+            fn as_u128(&self) -> u128 {
+                match self {
+                    $( $enum_name::$variant(v) => v.to_u128(), )*
+                }
+            }
         }
         define_common!($enum_name);
         define_math_common!($enum_name);

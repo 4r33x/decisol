@@ -7,21 +7,21 @@ macro_rules! define_math_common {
                 type Output = u128;
                 #[cfg_attr(feature = "track_caller", track_caller)]
                 fn mul(self, rhs: T) -> Self::Output {
-                    self.amount() as u128 * rhs.amount() as u128
+                    self.to_u128() * rhs.to_u128()
                 }
             }
             impl Mul<u64> for $variant {
                 type Output = u128;
                 #[cfg_attr(feature = "track_caller", track_caller)]
                 fn mul(self, rhs: u64) -> Self::Output {
-                    self.amount() as u128 * rhs as u128
+                    self.to_u128() * rhs as u128
                 }
             }
             impl Mul<$variant> for u64 {
                 type Output = u128;
                 #[cfg_attr(feature = "track_caller", track_caller)]
                 fn mul(self, rhs: $variant) -> Self::Output {
-                    self as u128 * rhs.amount() as u128
+                    self as u128 * rhs.to_u128()
                 }
             }
             impl Div<$variant> for u128 {
@@ -33,7 +33,7 @@ macro_rules! define_math_common {
                         overflow!($variant, Divu128, self, rhs);
                         return 0;
                     }
-                    self / rhs.amount() as u128
+                    self / rhs.to_u128()
                 }
             }
             impl Div<UD128> for $variant {

@@ -4,7 +4,7 @@ macro_rules! define_structs{
     ) => {
         $(
             #[derive(
-                Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Default,
+                Copy, Clone, Debug,PartialEq, Eq, PartialOrd, Ord,  Hash,  Default,
                 serde::Deserialize, serde::Serialize,
             )]
             pub struct $variant(pub u64);
@@ -28,6 +28,12 @@ macro_rules! define_structs{
                 }
                 fn decimals(&self) -> u8 {
                     Self::DECIMALS
+                }
+                fn to_u128(&self) -> u128 {
+                    self.amount() as u128
+                }
+                fn as_u128(&self) -> u128 {
+                    self.amount() as u128
                 }
             }
             impl From<u64> for $variant {
