@@ -126,6 +126,11 @@ impl From<QuoteLamportsKind> for SolanaLamportsKind {
         }
     }
 }
+impl From<QuoteLamports> for SolanaLamports {
+    fn from(value: QuoteLamports) -> Self {
+        Self::new(value.amount(), value.kind())
+    }
+}
 impl SolanaLamportsKind {
     pub fn is_quote(&self) -> bool {
         match self {
