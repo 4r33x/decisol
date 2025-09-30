@@ -13,10 +13,52 @@ macro_rules! define_structs{
                 pub fn new<T: ValidAmount>(amount: T) -> Self {
                     Self(amount.to_u64())
                 }
+                pub const fn new_u64(amount: u64) -> Self {
+                    Self(amount)
+                }
             }
 
             impl $variant {
                 pub const DECIMALS: u8 = $decimals;
+                pub const ZERO: Self = Self::new_u64(0u64);
+                pub const ONE: Self = Self::new_u64(1u64 * 10u64.pow(Self::DECIMALS as u32));
+                pub const TWO: Self = Self::new_u64(2u64 * 10u64.pow(Self::DECIMALS as u32));
+                pub const THREE: Self = Self::new_u64(3u64 * 10u64.pow(Self::DECIMALS as u32));
+                pub const FOUR: Self = Self::new_u64(4u64 * 10u64.pow(Self::DECIMALS as u32));
+                pub const FIVE: Self = Self::new_u64(5u64 * 10u64.pow(Self::DECIMALS as u32));
+                pub const TEN: Self = Self::new_u64(10u64 * 10u64.pow(Self::DECIMALS as u32));
+                pub const HUNDRED: Self = Self::new_u64(100u64 * 10u64.pow(Self::DECIMALS as u32));
+                pub const THOUSAND: Self = Self::new_u64(1_000u64 * 10u64.pow(Self::DECIMALS as u32));
+                pub const MILLION: Self = Self::new_u64(1_000_000u64 * 10u64.pow(Self::DECIMALS as u32));
+                pub const BILLION: Self = Self::new_u64(1_000_000_000u64 * 10u64.pow(Self::DECIMALS as u32));
+
+                pub const fn zero() -> Self {
+                    Self::ZERO
+                }
+
+                pub const fn one() -> Self {
+                    Self::ONE
+                }
+
+                pub const fn two() -> Self {
+                    Self::TWO
+                }
+
+                pub const fn three() -> Self {
+                    Self::THREE
+                }
+
+                pub const fn four() -> Self {
+                    Self::FOUR
+                }
+
+                pub const fn five() -> Self {
+                    Self::FIVE
+                }
+
+                pub const fn ten() -> Self {
+                    Self::TEN
+                }
             }
 
             impl Decisol for $variant {
