@@ -37,7 +37,7 @@ macro_rules! define_enum {
                     $( $kind_name ::$variant => $variant::DECIMALS, )*
                 }
             }
-            pub  fn value<A: ValidAmount>(&self, value: A) -> $enum_name {
+            pub fn value<A: ValidAmount>(&self, value: A) -> $enum_name {
                 $enum_name::new(value, *self)
             }
         }
