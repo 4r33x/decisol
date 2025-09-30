@@ -218,6 +218,7 @@ pub trait Decisol {
     fn decimals(&self) -> u8;
     fn to_u128(&self) -> u128;
     fn as_u128(&self) -> u128;
+    fn with_amount<A: ValidAmount>(&self, amount: A) -> Self;
 }
 
 pub trait ValidAmount: Copy {

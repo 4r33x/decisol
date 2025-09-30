@@ -149,6 +149,9 @@ macro_rules! define_enum {
                     $( $enum_name::$variant(v) => v.to_u128(), )*
                 }
             }
+            fn with_amount<A: ValidAmount>(&self, amount: A) -> Self {
+                Self::new(amount, self.kind())
+            }
         }
         define_common!($enum_name);
         define_math_common!($enum_name);

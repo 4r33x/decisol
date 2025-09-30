@@ -35,6 +35,9 @@ macro_rules! define_structs{
                 fn as_u128(&self) -> u128 {
                     self.amount() as u128
                 }
+                fn with_amount<A: ValidAmount>(&self, amount: A) -> Self {
+                    Self::new(amount)
+                }
             }
             impl From<u64> for $variant {
                 fn from(value: u64) -> Self {
