@@ -40,6 +40,49 @@ macro_rules! define_enum {
             pub fn value<A: ValidAmount>(&self, value: A) -> $enum_name {
                 $enum_name::new(value, *self)
             }
+
+
+            pub const fn zero(&self) -> $enum_name {
+                 match self {
+                    $( $kind_name ::$variant => $enum_name::$variant($variant::ZERO), )*
+                }
+            }
+
+            pub const fn one(&self) -> $enum_name {
+                match self {
+                    $( $kind_name ::$variant => $enum_name::$variant($variant::ONE), )*
+                }
+            }
+
+            pub const fn two(&self) -> $enum_name {
+                match self {
+                    $( $kind_name ::$variant => $enum_name::$variant($variant::TWO), )*
+                }
+            }
+
+            pub const fn three(&self) -> $enum_name {
+                match self {
+                    $( $kind_name ::$variant => $enum_name::$variant($variant::THREE), )*
+                }
+            }
+
+            pub const fn four(&self) -> $enum_name {
+                match self {
+                    $( $kind_name ::$variant => $enum_name::$variant($variant::FOUR), )*
+                }
+            }
+
+            pub const fn five(&self) -> $enum_name {
+                match self {
+                    $( $kind_name ::$variant => $enum_name::$variant($variant::FIVE), )*
+                }
+            }
+
+            pub const fn ten(&self) -> $enum_name {
+                match self {
+                    $( $kind_name ::$variant => $enum_name::$variant($variant::TEN), )*
+                }
+            }
         }
 
         impl $enum_name {
@@ -116,10 +159,36 @@ macro_rules! define_enum {
                     },
                 }
                 #[cfg(not(feature = "conv_checks"))]
-                unsafe{Self::new_from_decimals(value.digits().try_into().unwrap_unchecked(), decimals)}
+                Self::new_from_decimals(value.digits().try_into().unwrap_or_default(), decimals)
             }
 
+            pub fn zero(&self) -> Self {
+                self.with_amount(0u64)
+            }
 
+            pub fn one(&self) -> Self {
+                self.with_amount(1u64 * 10u64.pow(self.decimals() as u32))
+            }
+
+            pub fn two(&self) -> Self {
+                self.with_amount(2u64 * 10u64.pow(self.decimals() as u32))
+            }
+
+            pub fn three(&self) -> Self {
+                self.with_amount(3u64 * 10u64.pow(self.decimals() as u32))
+            }
+
+            pub fn four(&self) -> Self {
+                self.with_amount(4u64 * 10u64.pow(self.decimals() as u32))
+            }
+
+            pub fn five(&self) -> Self {
+                self.with_amount(5u64 * 10u64.pow(self.decimals() as u32))
+            }
+
+            pub fn ten(&self) -> Self {
+                self.with_amount(10u64 * 10u64.pow(self.decimals() as u32))
+            }
         }
 
         impl Decisol for $enum_name {
