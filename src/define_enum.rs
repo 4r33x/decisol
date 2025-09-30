@@ -46,8 +46,9 @@ macro_rules! define_enum {
                 }
             }
             #[cfg_attr(feature = "track_caller", track_caller)]
-            pub fn new<T: ValidAmount>(amount: T, kind: $kind_name) -> Self {
+            pub fn new<A: ValidAmount, T: Into<$kind_name>>(amount: A, kind: T) -> Self {
                 let amount = amount.to_u64();
+                let kind = kind.into();
                 match kind {
                     $(
                         $kind_name ::$variant => Self::$variant($variant(amount)),
@@ -66,10 +67,10 @@ macro_rules! define_enum {
                 let value = value.trunc_with_scale(decimals as i16);
                 #[cfg(feature = "conv_checks")]
                 match value.digits().try_into() {
-                    Ok(v) => Self::new::<u64>(v, kind),
+                    Ok(v) => Self::new::<u64, $kind_name>(v, kind),
                     Err(e) => {
                         conv_fail!($enum_name, FromUD128, value, e);
-                        Self::new::<u64>(0, kind)
+                        Self::new::<u64, $kind_name>(0, kind)
                     },
                 }
                 #[cfg(not(feature = "conv_checks"))]

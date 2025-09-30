@@ -115,7 +115,17 @@ define_enum! {
     Usdt,
 
 }
-
+impl From<QuoteLamportsKind> for SolanaLamportsKind {
+    fn from(value: QuoteLamportsKind) -> Self {
+        match value {
+            QuoteLamportsKind::Lamports => Self::Lamports,
+            QuoteLamportsKind::Wsol => Self::Wsol,
+            QuoteLamportsKind::Usdc => Self::Usdc,
+            QuoteLamportsKind::Usd1 => Self::Usd1,
+            QuoteLamportsKind::Usdt => Self::Usdt,
+        }
+    }
+}
 impl SolanaLamportsKind {
     pub fn is_quote(&self) -> bool {
         match self {
