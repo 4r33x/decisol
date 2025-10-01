@@ -7,7 +7,7 @@ macro_rules! define_structs{
                 Copy, Clone, Debug,PartialEq, Eq, PartialOrd, Ord,  Hash,  Default,
                 serde::Deserialize, serde::Serialize,
             )]
-            pub struct $variant(pub u64);
+            pub struct $variant(u64);
 
             impl $variant {
                 pub fn new<T: ValidAmount>(amount: T) -> Self {
