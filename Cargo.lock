@@ -323,8 +323,8 @@ dependencies = [
 
 [[package]]
 name = "prosto_derive"
-version = "0.1.1"
-source = "git+https://github.com/4r33x/proto-rs#4c5265b42e00111064fc42ca3fce3b879cc97a1a"
+version = "0.1.2"
+source = "git+https://github.com/4r33x/proto-rs#6a5e186c15fe7c0dfbb3f17ab0e742e49c481a44"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -333,9 +333,10 @@ dependencies = [
 
 [[package]]
 name = "proto_rs"
-version = "0.1.1"
-source = "git+https://github.com/4r33x/proto-rs#4c5265b42e00111064fc42ca3fce3b879cc97a1a"
+version = "0.1.2"
+source = "git+https://github.com/4r33x/proto-rs#6a5e186c15fe7c0dfbb3f17ab0e742e49c481a44"
 dependencies = [
+ "fastnum",
  "prost",
  "prosto_derive",
 ]

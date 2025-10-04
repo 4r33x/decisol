@@ -1,4 +1,6 @@
 use proto_rs::HasProto;
+pub use proto_rs::fastnum::D128Proto;
+pub use proto_rs::fastnum::UD128Proto;
 use proto_rs::proto_dump;
 
 use crate::Decisol;
