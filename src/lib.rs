@@ -17,7 +17,6 @@ mod define_common;
 mod overflow;
 #[macro_use]
 mod conv_fail;
-
 use std::cmp::Ordering;
 use std::fmt::Display;
 use std::ops::Add;
@@ -37,6 +36,10 @@ pub use fastnum::decimal::ParseError;
 pub use fastnum::decimal::UnsignedDecimal;
 pub use fastnum::udec128;
 use log::error;
+#[cfg(feature = "proto")]
+use proto_rs::proto_message;
+#[cfg(feature = "proto")]
+pub mod proto;
 
 define_structs! {
     TokenLamports0: 0,

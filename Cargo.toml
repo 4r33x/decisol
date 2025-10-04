@@ -9,6 +9,8 @@ serde = { version = "1" }
 anyhow = { version = "1" }
 fastnum = { version = "0.7.2", features = ["serde", "numtraits"] }
 num-traits = { version = "0.2", features = ["std"] }
+proto_rs = { git = "https://github.com/4r33x/proto-rs", optional = true }
+prost = { version = "0.14.1", optional = true }
 
 
 [dev-dependencies]
@@ -17,6 +19,8 @@ rust_decimal = "1.38.0"
 
 [features]
 default = ["overflow_errors", "track_caller", "check_enum_kind", "conv_errors"]
+
+proto = ["proto_rs", "prost"]
 
 track_caller = []
 overflow_checks = []
