@@ -215,7 +215,7 @@ define_enum! {
     Usdt,
 }
 
-pub trait Decisol {
+pub trait Decisol: Copy + Sub<u64, Output = Self> + Add<u64, Output = Self> {
     fn amount(&self) -> u64;
     fn amount_mut(&mut self) -> &mut u64;
     fn decimals(&self) -> u8;
