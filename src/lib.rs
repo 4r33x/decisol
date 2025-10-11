@@ -234,6 +234,7 @@ pub trait Decisol:
     + Debug
     + Into<UD128>
     + Into<D128>
+    + Mul<UD128, Output = Self>
 {
     fn amount(&self) -> u64;
     fn amount_mut(&mut self) -> &mut u64;
