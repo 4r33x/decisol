@@ -18,6 +18,7 @@ mod overflow;
 #[macro_use]
 mod conv_fail;
 use std::cmp::Ordering;
+use std::fmt::Debug;
 use std::fmt::Display;
 use std::ops::Add;
 use std::ops::AddAssign;
@@ -215,7 +216,25 @@ define_enum! {
     Usdt,
 }
 
-pub trait Decisol: Copy + Sub<u64, Output = Self> + Add<u64, Output = Self> {
+pub trait Decisol:
+    Clone
+    + Copy
+    + Sub<u64, Output = Self>
+    + Add<u64, Output = Self>
+    + PartialEq<u64>
+    + Eq
+    + Ord
+    + PartialOrd<u64>
+    + PartialEq<Self>
+    + PartialOrd<Self>
+    + Sub<Self, Output = Self>
+    + Add<Self, Output = Self>
+    + Display
+    + std::hash::Hash
+    + Debug
+    + Into<UD128>
+    + Into<D128>
+{
     fn amount(&self) -> u64;
     fn amount_mut(&mut self) -> &mut u64;
     fn decimals(&self) -> u8;
