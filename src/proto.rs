@@ -1,66 +1,55 @@
-use proto_rs::HasProto;
-pub use proto_rs::fastnum::D128Proto;
-pub use proto_rs::fastnum::UD128Proto;
-use proto_rs::proto_dump;
+use proto_rs::DecodeError;
+use proto_rs::ProtoShadow;
+use proto_rs::proto_message;
 
 use crate::Decisol;
 use crate::QuoteLamports;
 use crate::QuoteLamportsKind;
-use crate::QuoteLamportsKindProto;
 use crate::SolanaLamports;
 use crate::SolanaLamportsKind;
-use crate::SolanaLamportsKindProto;
 
-#[proto_dump(file = "protos/decisol.proto")]
-#[derive(prost::Message, Clone, PartialEq)]
-pub struct QuoteLamportsProto {
-    #[prost(uint64, tag = 1)]
+#[proto_message(proto_path = "protos/decisol.proto", sun = QuoteLamports)]
+pub struct QuoteLamportssProto {
     pub amount: u64,
-    #[prost(enumeration = "QuoteLamportsKindProto", tag = 2i32)]
-    pub kind: i32,
+    pub kind: QuoteLamportsKind,
 }
 
-impl HasProto for QuoteLamports {
-    type Proto = QuoteLamportsProto;
+impl ProtoShadow<QuoteLamports> for QuoteLamportssProto {
+    type Sun<'a> = QuoteLamports;
+    type OwnedSun = QuoteLamports;
+    type View<'a> = Self;
 
-    fn to_proto(&self) -> Self::Proto {
-        Self::Proto {
-            amount: self.amount(),
-            kind: self.kind().to_proto() as i32,
+    fn to_sun(self) -> Result<Self::OwnedSun, DecodeError> {
+        Ok(self.kind.value(self.amount))
+    }
+
+    fn from_sun(value: Self::Sun<'_>) -> Self::View<'_> {
+        Self {
+            amount: value.amount(),
+            kind: value.kind(),
         }
     }
-
-    fn from_proto(proto: Self::Proto) -> Result<Self, Box<dyn std::error::Error>>
-    where
-        Self: Sized,
-    {
-        Ok(Self::new(proto.amount, QuoteLamportsKind::try_from(proto.kind)?))
-    }
 }
 
-#[proto_dump(file = "protos/decisol.proto")]
-#[derive(prost::Message, Clone, PartialEq)]
+#[proto_message(proto_path = "protos/decisol.proto", sun = SolanaLamports)]
 pub struct SolanaLamportsProto {
-    #[prost(uint64, tag = 1)]
     pub amount: u64,
-    #[prost(enumeration = "SolanaLamportsKindProto", tag = 2i32)]
-    pub kind: i32,
+    pub kind: SolanaLamportsKind,
 }
 
-impl HasProto for SolanaLamports {
-    type Proto = SolanaLamportsProto;
+impl ProtoShadow<SolanaLamports> for SolanaLamportsProto {
+    type Sun<'a> = SolanaLamports;
+    type OwnedSun = SolanaLamports;
+    type View<'a> = Self;
 
-    fn to_proto(&self) -> Self::Proto {
-        Self::Proto {
-            amount: self.amount(),
-            kind: self.kind().to_proto() as i32,
-        }
+    fn to_sun(self) -> Result<Self::OwnedSun, DecodeError> {
+        Ok(self.kind.value(self.amount))
     }
 
-    fn from_proto(proto: Self::Proto) -> Result<Self, Box<dyn std::error::Error>>
-    where
-        Self: Sized,
-    {
-        Ok(Self::new(proto.amount, SolanaLamportsKind::try_from(proto.kind)?))
+    fn from_sun(value: Self::Sun<'_>) -> Self::View<'_> {
+        Self {
+            amount: value.amount(),
+            kind: value.kind(),
+        }
     }
 }

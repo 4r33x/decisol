@@ -2,44 +2,12 @@
 syntax = "proto3";
 package decisol;
 
-message SolanaLamports {
-  uint64 amount = 1;
-  int32 kind = 2;
-}
-
-enum TokenLamportsKind {
-  TOKEN_LAMPORTS0 = 0;
-  TOKEN_LAMPORTS1 = 1;
-  TOKEN_LAMPORTS2 = 2;
-  TOKEN_LAMPORTS3 = 3;
-  TOKEN_LAMPORTS4 = 4;
-  TOKEN_LAMPORTS5 = 5;
-  TOKEN_LAMPORTS6 = 6;
-  TOKEN_LAMPORTS7 = 7;
-  TOKEN_LAMPORTS8 = 8;
-  TOKEN_LAMPORTS9 = 9;
-  TOKEN_LAMPORTS10 = 10;
-  TOKEN_LAMPORTS11 = 11;
-  TOKEN_LAMPORTS12 = 12;
-  TOKEN_LAMPORTS13 = 13;
-  TOKEN_LAMPORTS14 = 14;
-  TOKEN_LAMPORTS15 = 15;
-  TOKEN_LAMPORTS16 = 16;
-  TOKEN_LAMPORTS17 = 17;
-  TOKEN_LAMPORTS18 = 18;
-}
-
 enum QuoteLamportsKind {
   LAMPORTS = 0;
   WSOL = 1;
   USDC = 2;
   USD1 = 3;
   USDT = 4;
-}
-
-message QuoteLamports {
-  uint64 amount = 1;
-  int32 kind = 2;
 }
 
 enum SolanaLamportsKind {
@@ -67,5 +35,133 @@ enum SolanaLamportsKind {
   USDC = 21;
   USD1 = 22;
   USDT = 23;
+}
+
+enum TokenLamportsKind {
+  TOKEN_LAMPORTS0 = 0;
+  TOKEN_LAMPORTS1 = 1;
+  TOKEN_LAMPORTS2 = 2;
+  TOKEN_LAMPORTS3 = 3;
+  TOKEN_LAMPORTS4 = 4;
+  TOKEN_LAMPORTS5 = 5;
+  TOKEN_LAMPORTS6 = 6;
+  TOKEN_LAMPORTS7 = 7;
+  TOKEN_LAMPORTS8 = 8;
+  TOKEN_LAMPORTS9 = 9;
+  TOKEN_LAMPORTS10 = 10;
+  TOKEN_LAMPORTS11 = 11;
+  TOKEN_LAMPORTS12 = 12;
+  TOKEN_LAMPORTS13 = 13;
+  TOKEN_LAMPORTS14 = 14;
+  TOKEN_LAMPORTS15 = 15;
+  TOKEN_LAMPORTS16 = 16;
+  TOKEN_LAMPORTS17 = 17;
+  TOKEN_LAMPORTS18 = 18;
+}
+
+message Lamports {
+  uint64 field_0 = 1;
+}
+
+message QuoteLamports {
+  uint64 amount = 1;
+  QuoteLamportsKind kind = 2;
+}
+
+message SolanaLamports {
+  uint64 amount = 1;
+  SolanaLamportsKind kind = 2;
+}
+
+message TokenLamports0 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports1 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports10 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports11 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports12 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports13 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports14 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports15 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports16 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports17 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports18 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports2 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports3 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports4 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports5 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports6 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports7 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports8 {
+  uint64 field_0 = 1;
+}
+
+message TokenLamports9 {
+  uint64 field_0 = 1;
+}
+
+message Usd1 {
+  uint64 field_0 = 1;
+}
+
+message Usdc {
+  uint64 field_0 = 1;
+}
+
+message Usdt {
+  uint64 field_0 = 1;
+}
+
+message Wsol {
+  uint64 field_0 = 1;
 }
 

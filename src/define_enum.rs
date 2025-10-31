@@ -21,7 +21,7 @@ macro_rules! define_enum {
             )*
         }
 
-        #[cfg_attr(feature = "proto", proto_message(file = "protos/decisol.proto"))]
+        #[cfg_attr(feature = "proto", proto_message(proto_path = "protos/decisol.proto"))]
         #[derive(
             Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord,
             serde::Deserialize, serde::Serialize,

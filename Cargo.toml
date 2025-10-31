@@ -4,13 +4,16 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-proto_rs = { version = "0.5.0", features = ["fastnum"], optional = true }
+proto_rs = { version = "0.6.1", features = [
+  "fastnum",
+  "stable",
+], optional = true }
+
 log = { version = "0.4", optional = true }
 serde = { version = "1" }
 anyhow = { version = "1" }
-fastnum = { version = "0.7.2", features = ["serde", "numtraits"] }
+fastnum = { version = "0.7.3", features = ["serde", "numtraits"] }
 num-traits = { version = "0.2", features = ["std"] }
-prost = { version = "0.14.1", optional = true }
 inventory = { version = "0.3", optional = true }
 
 [dev-dependencies]
@@ -20,7 +23,12 @@ rust_decimal = "1.38.0"
 [features]
 default = ["overflow_errors", "track_caller", "check_enum_kind", "conv_errors"]
 build-schemas = ["dep:inventory", "proto_rs/build-schemas"]
-proto = ["dep:proto_rs", "dep:prost", "proto_rs/fastnum"]
+proto = [
+  "dep:proto_rs",
+  "proto_rs/fastnum",
+  "proto_rs/stable",
+  "proto_rs/emit-proto-files",
+]
 
 track_caller = []
 overflow_checks = []

@@ -3,6 +3,7 @@ macro_rules! define_structs{
         $( $variant:ident : $decimals:expr ),* $(,)?
     ) => {
         $(
+            #[cfg_attr(feature = "proto", proto_message(proto_path = "protos/decisol.proto"))]
             #[derive(
                 Copy, Clone, Debug,PartialEq, Eq, PartialOrd, Ord,  Hash,  Default,
                 serde::Deserialize, serde::Serialize,
