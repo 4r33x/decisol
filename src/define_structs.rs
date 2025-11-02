@@ -63,6 +63,29 @@ macro_rules! define_structs{
             }
 
             impl Decisol for $variant {
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn div_ceil(mut self, r: UD128) -> Self {
+                    let r = r.trunc_with_scale(9);
+                    let f = r.fractional_digits_count();
+                    let raw = r.digits();
+                    let (raw, scale) = if f < 0 { (raw * UInt::TEN.pow((-f) as u32), UInt::ONE) } else { (raw, UInt::TEN.pow(f as u32)) };
+                    let lhs = UInt::from_u64(self.amount());
+                    let res = (lhs * raw).div_ceil(scale);
+
+                    #[cfg(feature = "overflow_checks")]
+                    let prod: u64 = match res.try_into() {
+                        Ok(v) => v,
+                        Err(_) => {
+                            overflow!($variant, DivCeilConvFromUint, self, r);
+                            0
+                        }
+                    };
+
+                    #[cfg(not(feature = "overflow_checks"))]
+                    let prod = res.try_into().unwrap_or_default();
+                    *self.amount_mut() = prod;
+                    self
+                }
                 fn amount(&self) -> u64 {
                     self.0
                 }

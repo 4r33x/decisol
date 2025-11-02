@@ -236,6 +236,7 @@ pub trait Decisol:
     + Into<D128>
     + Mul<UD128, Output = Self>
 {
+    fn div_ceil(self, r: UD128) -> Self;
     fn amount(&self) -> u64;
     fn amount_mut(&mut self) -> &mut u64;
     fn decimals(&self) -> u8;
@@ -444,6 +445,13 @@ mod tests {
         let _liq = sol * token;
         let _liq = sol * sol;
         let _liq = token * token;
+    }
+
+    #[test]
+    fn div_recip() {
+        let sol: Lamports = Lamports::new(Lamports::ten() * 1000);
+        let div = sol.div_ceil((udec128!(5000) / udec128!(10000)).recip());
+        assert_eq!(20_000_000_000_000, div.amount());
     }
     #[test]
     fn mult2() {
