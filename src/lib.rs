@@ -196,6 +196,14 @@ impl QuoteLamportsKind {
         }
     }
 }
+impl QuoteLamports {
+    pub fn quote_kind(&self) -> QuoteKind {
+        match self {
+            Self::Lamports(_) | Self::Wsol(_) => QuoteKind::Sol,
+            Self::Usdc(_) | Self::Usd1(_) | Self::Usdt(_) => QuoteKind::Usd,
+        }
+    }
+}
 pub enum QuoteKind {
     Usd,
     Sol,
