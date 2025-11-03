@@ -55,6 +55,22 @@ macro_rules! define_math {
                     }
                 }
             }
+            impl SubAssign<u64> for $variant {
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn sub_assign(&mut self, rhs: u64) {
+                    #[cfg(feature = "overflow_checks")]
+                    {
+                        if self.amount() < rhs {
+                            overflow!($variant, SubAssign, self.amount(), rhs);
+                        }
+                        *self = Self::new(0u64);
+                    }
+                    #[cfg(not(feature = "overflow_checks"))]
+                    {
+                        *self = *self - rhs;
+                    }
+                }
+            }
             impl Add for $variant {
                 type Output = Self;
                 #[cfg_attr(feature = "track_caller", track_caller)]
