@@ -138,6 +138,24 @@ macro_rules! define_math {
 
                 }
             }
+            impl AddAssign<u64> for $variant {
+                #[cfg_attr(feature = "track_caller", track_caller)]
+                fn add_assign(&mut self, rhs: u64) {
+                    #[cfg(feature = "overflow_checks")]
+                    {
+                        let (res, over) = self.amount().overflowing_add(rhs);
+                        if over {
+                            overflow!($variant, AddAssign, self, rhs);
+                        }
+                        *self = Self::new(res);
+                    }
+                    #[cfg(not(feature = "overflow_checks"))]
+                    {
+                        *self = *self + rhs;
+                    }
+
+                }
+            }
         )*
     };
 }
