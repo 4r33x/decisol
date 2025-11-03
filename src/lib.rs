@@ -67,6 +67,8 @@ define_structs! {
     Usdc: 6,
     Usd1: 6,
     Usdt: 6,
+    Usd: 6,
+    Sol: 9,
 
 }
 define_enum! {

@@ -68,6 +68,10 @@ message QuoteLamports {
   QuoteLamportsKind kind = 2;
 }
 
+message Sol {
+  uint64 field_0 = 1;
+}
+
 message SolanaLamports {
   uint64 amount = 1;
   SolanaLamportsKind kind = 2;
@@ -146,6 +150,10 @@ message TokenLamports8 {
 }
 
 message TokenLamports9 {
+  uint64 field_0 = 1;
+}
+
+message Usd {
   uint64 field_0 = 1;
 }
 
