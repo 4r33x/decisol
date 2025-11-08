@@ -1,6 +1,9 @@
 macro_rules! define_enum {
     (
-        $enum_name:ident, $kind_name:ident, $( $variant:ident ),* $(,)?
+        $enum_name:ident, $kind_name:ident,
+        $(
+            $variant:ident
+        ),* $(,)?
     ) => {
 
         $(
@@ -249,8 +252,36 @@ macro_rules! define_enum {
         define_common!($enum_name);
         define_math_common!($enum_name);
         define_math_enum!($enum_name);
+        define_enum!(@impl_traits $enum_name, $kind_name, $($variant),*);
+    };
 
+    // Branch: QuoteLamportsKind → implement both Base and Quote
+    (@impl_traits QuoteLamports, QuoteLamportsKind, $($variant:ident),*) => {
+        impl Base for QuoteLamports {
+            fn kind(&self) -> SolanaLamportsKind {
+                match self {
+                    $(QuoteLamports::$variant(_) => SolanaLamportsKind::$variant),*
+                }
+            }
+        }
 
+        impl Quote for QuoteLamports {
+            fn kind(&self) -> QuoteLamportsKind {
+                match self {
+                    $(QuoteLamports::$variant(_) => QuoteLamportsKind::$variant),*
+                }
+            }
+        }
+    };
 
+    // SolanaLamportsKind → implement only Base
+    (@impl_traits $enum_name:ident, $kind_name:ident, $($variant:ident),*) => {
+        impl Base for $enum_name {
+            fn kind(&self) -> SolanaLamportsKind {
+                match self {
+                    $($enum_name::$variant(_) => SolanaLamportsKind::$variant),*
+                }
+            }
+        }
     };
 }

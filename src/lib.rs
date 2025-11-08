@@ -43,34 +43,34 @@ use proto_rs::proto_message;
 pub mod proto;
 
 define_structs! {
-    TokenLamports0: 0,
-    TokenLamports1: 1,
-    TokenLamports2: 2,
-    TokenLamports3: 3,
-    TokenLamports4: 4,
-    TokenLamports5: 5,
-    TokenLamports6: 6,
-    TokenLamports7: 7,
-    TokenLamports8: 8,
-    TokenLamports9: 9,
-    TokenLamports10: 10,
-    TokenLamports11: 11,
-    TokenLamports12: 12,
-    TokenLamports13: 13,
-    TokenLamports14: 14,
-    TokenLamports15: 15,
-    TokenLamports16: 16,
-    TokenLamports17: 17,
-    TokenLamports18: 18,
-    Lamports: 9,
-    Wsol: 9,
-    Usdc: 6,
-    Usd1: 6,
-    Usdt: 6,
-    Usd: 6,
-    Sol: 9,
-
+    TokenLamports0: 0, Base;
+    TokenLamports1: 1, Base;
+    TokenLamports2: 2, Base;
+    TokenLamports3: 3, Base;
+    TokenLamports4: 4, Base;
+    TokenLamports5: 5, Base;
+    TokenLamports6: 6, Base;
+    TokenLamports7: 7, Base;
+    TokenLamports8: 8, Base;
+    TokenLamports9: 9, Base;
+    TokenLamports10: 10, Base;
+    TokenLamports11: 11, Base;
+    TokenLamports12: 12, Base;
+    TokenLamports13: 13, Base;
+    TokenLamports14: 14, Base;
+    TokenLamports15: 15, Base;
+    TokenLamports16: 16, Base;
+    TokenLamports17: 17, Base;
+    TokenLamports18: 18, Base;
+    Lamports: 9, Base, Quote;
+    Wsol: 9, Base, Quote;
+    Usdc: 6, Base, Quote;
+    Usd1: 6, Base, Quote;
+    Usdt: 6, Base, Quote;
+    Usd: 6;
+    Sol: 9;
 }
+
 define_enum! {
     TokenLamports, TokenLamportsKind,
     TokenLamports0,
@@ -224,6 +224,13 @@ define_enum! {
     Usdc,
     Usd1,
     Usdt,
+}
+
+pub trait Quote {
+    fn kind(&self) -> QuoteLamportsKind;
+}
+pub trait Base {
+    fn kind(&self) -> SolanaLamportsKind;
 }
 
 pub trait Decisol:

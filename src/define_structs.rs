@@ -1,6 +1,8 @@
 macro_rules! define_structs{
     (
-        $( $variant:ident : $decimals:expr ),* $(,)?
+        $(
+            $variant:ident : $decimals:literal $(, $($traits:ident),*)?;
+        )*
     ) => {
         $(
             #[cfg_attr(feature = "proto", proto_message(proto_path = "protos/decisol.proto"))]
@@ -9,6 +11,12 @@ macro_rules! define_structs{
                 serde::Deserialize, serde::Serialize,
             )]
             pub struct $variant(u64);
+
+
+            $(
+                define_structs!(@impl_traits $variant: $($traits),*);
+            )?
+
 
             impl $variant {
                 pub fn new<T: ValidAmount>(amount: T) -> Self {
@@ -142,5 +150,27 @@ macro_rules! define_structs{
             }
 
         )*
+    };
+    // no traits left
+    (@impl_traits $name:ident: ) => {};
+
+    // handle Base, then recurse
+    (@impl_traits $name:ident: Base $(, $rest:ident)* ) => {
+        impl Base for $name {
+            fn kind(&self) -> SolanaLamportsKind {
+                SolanaLamportsKind::$name
+            }
+        }
+        define_structs!(@impl_traits $name: $($rest),*);
+    };
+
+    // handle Quote, then recurse
+    (@impl_traits $name:ident: Quote $(, $rest:ident)* ) => {
+        impl Quote for $name {
+            fn kind(&self) -> QuoteLamportsKind {
+                QuoteLamportsKind::$name
+            }
+        }
+        define_structs!(@impl_traits $name: $($rest),*);
     };
 }

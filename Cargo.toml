@@ -17,7 +17,7 @@ num-traits = { version = "0.2", features = ["std"] }
 inventory = { version = "0.3", optional = true }
 
 [dev-dependencies]
-rust_decimal = "1.38.0"
+rust_decimal = "1.39.0"
 
 
 [features]
