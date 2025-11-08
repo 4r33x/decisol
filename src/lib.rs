@@ -226,6 +226,35 @@ define_enum! {
     Usdt,
 }
 
+#[inline]
+pub fn compare_quotes_native<F: FnOnce() -> UD128>(usd_price: F, a: QuoteLamports, b: QuoteLamports) -> std::cmp::Ordering {
+    match (a.quote_kind(), b.quote_kind()) {
+        (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.cmp(&b),
+        (QuoteKind::Usd, QuoteKind::Sol) => {
+            let usd_price = usd_price();
+            (a * usd_price).cmp(&b)
+        }
+        (QuoteKind::Sol, QuoteKind::Usd) => {
+            let usd_price = usd_price();
+            a.cmp(&(b * usd_price))
+        }
+    }
+}
+#[inline]
+pub fn compare_quotes_usd<F: FnOnce() -> UD128>(a: QuoteLamports, b: QuoteLamports, sol_price: F) -> std::cmp::Ordering {
+    match (a.quote_kind(), b.quote_kind()) {
+        (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.cmp(&b),
+        (QuoteKind::Sol, QuoteKind::Usd) => {
+            let sol_price = sol_price();
+            (a * sol_price).cmp(&b)
+        }
+        (QuoteKind::Usd, QuoteKind::Sol) => {
+            let sol_price = sol_price();
+            a.cmp(&(b * sol_price))
+        }
+    }
+}
+
 pub trait Quote {
     fn kind(&self) -> QuoteLamportsKind;
 }
