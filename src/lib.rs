@@ -229,28 +229,28 @@ define_enum! {
 #[inline]
 pub fn compare_quotes_native<F: FnOnce() -> UD128>(usd_price: F, a: QuoteLamports, b: QuoteLamports) -> std::cmp::Ordering {
     match (a.quote_kind(), b.quote_kind()) {
-        (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.cmp(&b),
+        (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.amount().cmp(&b.amount()),
         (QuoteKind::Usd, QuoteKind::Sol) => {
             let usd_price = usd_price();
-            (a * usd_price).cmp(&b)
+            (a * usd_price).amount().cmp(&b.amount())
         }
         (QuoteKind::Sol, QuoteKind::Usd) => {
             let usd_price = usd_price();
-            a.cmp(&(b * usd_price))
+            a.amount().cmp(&(b * usd_price).amount())
         }
     }
 }
 #[inline]
 pub fn compare_quotes_usd<F: FnOnce() -> UD128>(a: QuoteLamports, b: QuoteLamports, sol_price: F) -> std::cmp::Ordering {
     match (a.quote_kind(), b.quote_kind()) {
-        (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.cmp(&b),
+        (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.amount().cmp(&b.amount()),
         (QuoteKind::Sol, QuoteKind::Usd) => {
             let sol_price = sol_price();
-            (a * sol_price).cmp(&b)
+            (a * sol_price).amount().cmp(&b.amount())
         }
         (QuoteKind::Usd, QuoteKind::Sol) => {
             let sol_price = sol_price();
-            a.cmp(&(b * sol_price))
+            a.amount().cmp(&(b * sol_price).amount())
         }
     }
 }
@@ -269,10 +269,10 @@ pub trait Decisol:
     + Add<u64, Output = Self>
     + PartialEq<u64>
     + Eq
-    + Ord
+    // + Ord
+    //+ PartialOrd<Self>
     + PartialOrd<u64>
     + PartialEq<Self>
-    + PartialOrd<Self>
     + Sub<Self, Output = Self>
     + Add<Self, Output = Self>
     + Display

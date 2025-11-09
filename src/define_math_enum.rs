@@ -9,7 +9,7 @@ macro_rules! define_math_enum {
                 fn sub(mut self, rhs: Self) -> Self::Output {
                     check_kind_and_decimals!($variant, SubSelf, self, rhs);
                     #[cfg(feature = "overflow_checks")]
-                    if self<rhs {
+                    if self.amount() < rhs.amount() {
                         overflow!($variant, SubSelf, self, rhs);
                         *self.amount_mut() = 0;
                         return self;

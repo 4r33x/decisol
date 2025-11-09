@@ -15,7 +15,7 @@ macro_rules! define_enum {
         )*
 
         #[derive(
-            Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord,
+            Debug, Clone, Copy, PartialEq, Eq, Hash,
             serde::Deserialize, serde::Serialize,
         )]
         pub enum $enum_name {
