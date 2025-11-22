@@ -15,7 +15,7 @@ pub struct QuoteLamportssProto {
 }
 
 impl ProtoShadow<QuoteLamports> for QuoteLamportssProto {
-    type Sun<'a> = QuoteLamports;
+    type Sun<'a> = &'a QuoteLamports;
     type OwnedSun = QuoteLamports;
     type View<'a> = Self;
 
@@ -38,7 +38,7 @@ pub struct SolanaLamportsProto {
 }
 
 impl ProtoShadow<SolanaLamports> for SolanaLamportsProto {
-    type Sun<'a> = SolanaLamports;
+    type Sun<'a> = &'a SolanaLamports;
     type OwnedSun = SolanaLamports;
     type View<'a> = Self;
 
