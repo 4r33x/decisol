@@ -316,9 +316,9 @@ dependencies = [
 
 [[package]]
 name = "prosto_derive"
-version = "0.6.7"
+version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "70bfea19215f0d043a8316f48dc1062a105e6d38c7b93a34511e435f42f25689"
+checksum = "22b6b05e7cc9824b88c61a2e9725365e1394ddd08328c1d3070121e914520f31"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -327,9 +327,9 @@ dependencies = [
 
 [[package]]
 name = "proto_rs"
-version = "0.6.7"
+version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2afde32e267de078b0aaf3892d36c9326d64b9829e29f5e969b4ccd561c2adff"
+checksum = "108bf6382af0cc633618d90487e0c374cb35789d10a67b31d144e5a3647d219e"
 dependencies = [
  "bytes",
  "const_panic",
