@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-proto_rs = { version = "0.6.8", default-features = false, features = [
+proto_rs = { version = "0.7", default-features = false, features = [
   "fastnum",
   "stable",
 ], optional = true }
@@ -12,7 +12,7 @@ proto_rs = { version = "0.6.8", default-features = false, features = [
 log = { version = "0.4", optional = true }
 serde = { version = "1" }
 anyhow = { version = "1" }
-fastnum = { version = "0.7.3", features = ["serde", "numtraits"] }
+fastnum = { version = "0.7", features = ["serde", "numtraits"] }
 num-traits = { version = "0.2", features = ["std"] }
 inventory = { version = "0.3", optional = true }
 
