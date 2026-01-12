@@ -138,6 +138,32 @@ impl From<QuoteLamports> for SolanaLamports {
     }
 }
 impl SolanaLamportsKind {
+    pub fn from_dec(dec: u8) -> Option<Self> {
+        match dec {
+            0 => Some(SolanaLamportsKind::TokenLamports0),
+            1 => Some(SolanaLamportsKind::TokenLamports1),
+            2 => Some(SolanaLamportsKind::TokenLamports2),
+            3 => Some(SolanaLamportsKind::TokenLamports3),
+            4 => Some(SolanaLamportsKind::TokenLamports4),
+            5 => Some(SolanaLamportsKind::TokenLamports5),
+            6 => Some(SolanaLamportsKind::TokenLamports6),
+            7 => Some(SolanaLamportsKind::TokenLamports7),
+            8 => Some(SolanaLamportsKind::TokenLamports8),
+            9 => Some(SolanaLamportsKind::TokenLamports9),
+            10 => Some(SolanaLamportsKind::TokenLamports10),
+            11 => Some(SolanaLamportsKind::TokenLamports11),
+            12 => Some(SolanaLamportsKind::TokenLamports12),
+            13 => Some(SolanaLamportsKind::TokenLamports13),
+            14 => Some(SolanaLamportsKind::TokenLamports14),
+            15 => Some(SolanaLamportsKind::TokenLamports15),
+            16 => Some(SolanaLamportsKind::TokenLamports16),
+            17 => Some(SolanaLamportsKind::TokenLamports17),
+            18 => Some(SolanaLamportsKind::TokenLamports18),
+            v => {
+                None
+            }
+        }
+    }
     pub fn is_quote(&self) -> bool {
         match self {
             Self::TokenLamports0
