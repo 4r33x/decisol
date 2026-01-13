@@ -323,9 +323,9 @@ dependencies = [
 
 [[package]]
 name = "prosto_derive"
-version = "0.7.0"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99ef7b216e6f78b7f07be16772d5039816af6c77e012dbb7ad93ab3a7c1f1a3d"
+checksum = "88f98acd75b9ecf0540f9c1b76640cb329127b2dff2415a957925502a789e2fe"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -334,9 +334,9 @@ dependencies = [
 
 [[package]]
 name = "proto_rs"
-version = "0.7.0"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f50a695c9da34bda735e544046bafd1e1e52597ad7a6f149e41ff54ae110fe6"
+checksum = "da66ce1a1d2ca263e9f50addf45fa1226f625511c7aced6c4ab122dc7f6dfbfa"
 dependencies = [
  "bytes",
  "const_panic",
@@ -732,6 +732,6 @@ dependencies = [
 
 [[package]]
 name = "zmij"
-version = "1.0.13"
+version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac93432f5b761b22864c774aac244fa5c0fd877678a4c37ebf6cf42208f9c9ec"
+checksum = "bd8f3f50b848df28f887acb68e41201b5aea6bc8a8dacc00fb40635ff9a72fea"
