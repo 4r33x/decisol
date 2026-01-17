@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-proto_rs = { version = "0.7", default-features = false, features = [
+proto_rs = { version = "0.8", default-features = false, features = [
   "fastnum",
   "stable",
 ], optional = true }
@@ -17,12 +17,12 @@ num-traits = { version = "0.2", features = ["std"] }
 inventory = { version = "0.3", optional = true }
 
 [dev-dependencies]
-rust_decimal = "1.39.0"
+rust_decimal = "1.40.0"
 
 
 [features]
 default = ["overflow_errors", "track_caller", "check_enum_kind", "conv_errors"]
-build-schemas = ["dep:inventory", "proto_rs/build-schemas"]
+build-schemas = ["dep:inventory", "proto_rs/build-schemas", "proto"]
 proto = [
   "dep:proto_rs",
   "proto_rs/fastnum",
