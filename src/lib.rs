@@ -244,6 +244,9 @@ impl QuoteLamportsKind {
     pub fn is_lamports(&self) -> bool {
         matches!(self, QuoteLamportsKind::Lamports)
     }
+    pub fn is_wsol(&self) -> bool {
+        matches!(self, QuoteLamportsKind::Wsol)
+    }
     pub fn quote_kind(&self) -> QuoteKind {
         match self {
             Self::Lamports | Self::Wsol => QuoteKind::Sol,
@@ -254,6 +257,9 @@ impl QuoteLamportsKind {
 impl QuoteLamports {
     pub fn is_lamports(&self) -> bool {
         matches!(self.kind(), QuoteLamportsKind::Lamports)
+    }
+    pub fn is_wsol(&self) -> bool {
+        matches!(self.kind(), QuoteLamportsKind::Wsol)
     }
     pub fn quote_kind(&self) -> QuoteKind {
         match self {
