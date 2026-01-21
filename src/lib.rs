@@ -138,6 +138,34 @@ impl From<QuoteLamports> for SolanaLamports {
     }
 }
 impl SolanaLamportsKind {
+    pub fn to_quote(self) -> Option<QuoteLamportsKind> {
+        match self {
+            SolanaLamportsKind::TokenLamports0
+            | SolanaLamportsKind::TokenLamports1
+            | SolanaLamportsKind::TokenLamports2
+            | SolanaLamportsKind::TokenLamports3
+            | SolanaLamportsKind::TokenLamports4
+            | SolanaLamportsKind::TokenLamports5
+            | SolanaLamportsKind::TokenLamports6
+            | SolanaLamportsKind::TokenLamports7
+            | SolanaLamportsKind::TokenLamports8
+            | SolanaLamportsKind::TokenLamports9
+            | SolanaLamportsKind::TokenLamports10
+            | SolanaLamportsKind::TokenLamports11
+            | SolanaLamportsKind::TokenLamports12
+            | SolanaLamportsKind::TokenLamports13
+            | SolanaLamportsKind::TokenLamports14
+            | SolanaLamportsKind::TokenLamports15
+            | SolanaLamportsKind::TokenLamports16
+            | SolanaLamportsKind::TokenLamports17
+            | SolanaLamportsKind::TokenLamports18 => None,
+            SolanaLamportsKind::Lamports => Some(QuoteLamportsKind::Lamports),
+            SolanaLamportsKind::Wsol => Some(QuoteLamportsKind::Wsol),
+            SolanaLamportsKind::Usdc => Some(QuoteLamportsKind::Usdc),
+            SolanaLamportsKind::Usd1 => Some(QuoteLamportsKind::Usd1),
+            SolanaLamportsKind::Usdt => Some(QuoteLamportsKind::Usdt),
+        }
+    }
     pub fn from_dec(dec: u8) -> Option<Self> {
         match dec {
             0 => Some(SolanaLamportsKind::TokenLamports0),
@@ -159,9 +187,7 @@ impl SolanaLamportsKind {
             16 => Some(SolanaLamportsKind::TokenLamports16),
             17 => Some(SolanaLamportsKind::TokenLamports17),
             18 => Some(SolanaLamportsKind::TokenLamports18),
-            v => {
-                None
-            }
+            _ => None,
         }
     }
     pub fn is_quote(&self) -> bool {
@@ -215,6 +241,9 @@ impl SolanaLamportsKind {
     }
 }
 impl QuoteLamportsKind {
+    pub fn is_lamports(&self) -> bool {
+        matches!(self, QuoteLamportsKind::Lamports)
+    }
     pub fn quote_kind(&self) -> QuoteKind {
         match self {
             Self::Lamports | Self::Wsol => QuoteKind::Sol,
@@ -223,6 +252,9 @@ impl QuoteLamportsKind {
     }
 }
 impl QuoteLamports {
+    pub fn is_lamports(&self) -> bool {
+        matches!(self.kind(), QuoteLamportsKind::Lamports)
+    }
     pub fn quote_kind(&self) -> QuoteKind {
         match self {
             Self::Lamports(_) | Self::Wsol(_) => QuoteKind::Sol,
@@ -239,6 +271,37 @@ impl QuoteKind {
         match self {
             QuoteKind::Usd => 6,
             QuoteKind::Sol => 9,
+        }
+    }
+}
+
+impl SolanaLamports {
+    pub fn to_quote(self) -> Option<QuoteLamports> {
+        match self.kind() {
+            SolanaLamportsKind::TokenLamports0
+            | SolanaLamportsKind::TokenLamports1
+            | SolanaLamportsKind::TokenLamports2
+            | SolanaLamportsKind::TokenLamports3
+            | SolanaLamportsKind::TokenLamports4
+            | SolanaLamportsKind::TokenLamports5
+            | SolanaLamportsKind::TokenLamports6
+            | SolanaLamportsKind::TokenLamports7
+            | SolanaLamportsKind::TokenLamports8
+            | SolanaLamportsKind::TokenLamports9
+            | SolanaLamportsKind::TokenLamports10
+            | SolanaLamportsKind::TokenLamports11
+            | SolanaLamportsKind::TokenLamports12
+            | SolanaLamportsKind::TokenLamports13
+            | SolanaLamportsKind::TokenLamports14
+            | SolanaLamportsKind::TokenLamports15
+            | SolanaLamportsKind::TokenLamports16
+            | SolanaLamportsKind::TokenLamports17
+            | SolanaLamportsKind::TokenLamports18 => None,
+            SolanaLamportsKind::Lamports => Some(QuoteLamports::Lamports(Lamports::new(self.amount()))),
+            SolanaLamportsKind::Wsol => Some(QuoteLamports::Wsol(Wsol::new(self.amount()))),
+            SolanaLamportsKind::Usdc => Some(QuoteLamports::Usdc(Usdc::new(self.amount()))),
+            SolanaLamportsKind::Usd1 => Some(QuoteLamports::Usd1(Usd1::new(self.amount()))),
+            SolanaLamportsKind::Usdt => Some(QuoteLamports::Usdt(Usdt::new(self.amount()))),
         }
     }
 }
