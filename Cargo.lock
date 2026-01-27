@@ -323,9 +323,9 @@ dependencies = [
 
 [[package]]
 name = "prosto_derive"
-version = "0.9.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a152f15ed11b299b61df95d12c0d6e946c958f548599d9ceac5098e5d30a53f"
+checksum = "2f9aab772db1aaa4de31fd781e9bf17a5d2fca84a7fe21ec01e0ee9acc836bb4"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -334,9 +334,9 @@ dependencies = [
 
 [[package]]
 name = "proto_rs"
-version = "0.9.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c71d2b6333142276714f1211c2ed41856fa9524f45c9203335ee980167583710"
+checksum = "9b8e2a757638b011357eea91426dc2bc9129507ae29ff780d912b5706df01b13"
 dependencies = [
  "bytes",
  "const_panic",
@@ -712,18 +712,18 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.33"
+version = "0.8.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "668f5168d10b9ee831de31933dc111a459c97ec93225beb307aed970d1372dfd"
+checksum = "71ddd76bcebeed25db614f82bf31a9f4222d3fbba300e6fb6c00afa26cbd4d9d"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.33"
+version = "0.8.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c7962b26b0a8685668b671ee4b54d007a67d4eaf05fda79ac0ecf41e32270f1"
+checksum = "d8187381b52e32220d50b255276aa16a084ec0a9017a0ca2152a1f55c539758d"
 dependencies = [
  "proc-macro2",
  "quote",
