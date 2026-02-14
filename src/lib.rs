@@ -258,12 +258,12 @@ impl QuoteLamports {
     pub fn quotes_from_sol_price(&self, sol_price: UD128) -> (Sol, Usd) {
         match self.quote_kind() {
             QuoteKind::Usd => (Sol::from(*self / sol_price), Usd::new(self.amount())),
-            QuoteKind::Sol => (Sol::new((*self).amount()), Usd::new((*self * sol_price).amount())),
+            QuoteKind::Sol => (Sol::new((*self).amount()), Usd::from(UD128::from(*self * sol_price))),
         }
     }
     pub fn quotes_from_usd_price(&self, usd_price: UD128) -> (Sol, Usd) {
         match self.quote_kind() {
-            QuoteKind::Usd => (Sol::new((*self * usd_price).amount()), Usd::new(self.amount())),
+            QuoteKind::Usd => (Sol::from(UD128::from(*self * usd_price)), Usd::new(self.amount())),
             QuoteKind::Sol => (Sol::new((*self).amount()), Usd::from(*self / usd_price)),
         }
     }
