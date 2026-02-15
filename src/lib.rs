@@ -254,6 +254,12 @@ impl QuoteLamportsKind {
         }
     }
 }
+
+impl Default for QuoteLamports {
+    fn default() -> Self {
+        QuoteLamports::Lamports(Lamports::ZERO)
+    }
+}
 impl QuoteLamports {
     pub fn quotes_from_sol_price(&self, sol_price: UD128) -> (Sol, Usd) {
         match self.quote_kind() {
