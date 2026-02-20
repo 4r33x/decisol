@@ -342,18 +342,34 @@ define_enum! {
     Usdt,
 }
 
+fn usd_to_sol(a: impl Decisol, usd_price: UD128) -> u64 {
+    (a * usd_price).amount().saturating_mul(USD_TO_WSOL_NUM)
+}
+fn sol_to_usd(a: impl Decisol, sol_price: UD128) -> u64 {
+    (a * sol_price).amount() / USD_TO_WSOL_NUM
+}
+
+impl QuoteLamports {
+    #[inline]
+    pub fn normalize<SOL: FnOnce() -> UD128, USD: FnOnce() -> UD128>(&self, quote_in: QuoteLamports, sol_price: SOL, usd_price: USD) -> Self {
+        match (quote_in.quote_kind(), self.quote_kind()) {
+            (QuoteKind::Usd, QuoteKind::Sol) => self.with_amount((quote_in * usd_price()).amount()),
+            (QuoteKind::Sol, QuoteKind::Usd) => self.with_amount((quote_in * sol_price()).amount()),
+            (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => quote_in,
+        }
+    }
+}
+
 #[inline]
 pub fn compare_quotes_native<F: FnOnce() -> UD128>(usd_price: F, a: QuoteLamports, b: QuoteLamports) -> std::cmp::Ordering {
     match (a.quote_kind(), b.quote_kind()) {
         (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.amount().cmp(&b.amount()),
         (QuoteKind::Usd, QuoteKind::Sol) => {
-            let usd_price = usd_price();
-            let a_in_sol = (a * usd_price).amount().saturating_mul(USD_TO_WSOL_NUM);
+            let a_in_sol = usd_to_sol(a, usd_price());
             a_in_sol.cmp(&b.amount())
         }
         (QuoteKind::Sol, QuoteKind::Usd) => {
-            let usd_price = usd_price();
-            let b_in_sol = (b * usd_price).amount().saturating_mul(USD_TO_WSOL_NUM);
+            let b_in_sol = usd_to_sol(b, usd_price());
             a.amount().cmp(&b_in_sol)
         }
     }
@@ -363,13 +379,11 @@ pub fn compare_quotes_usd<F: FnOnce() -> UD128>(a: QuoteLamports, b: QuoteLampor
     match (a.quote_kind(), b.quote_kind()) {
         (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.amount().cmp(&b.amount()),
         (QuoteKind::Sol, QuoteKind::Usd) => {
-            let sol_price = sol_price();
-            let a_in_usd = (a * sol_price).amount() / USD_TO_WSOL_NUM;
+            let a_in_usd = sol_to_usd(a, sol_price());
             a_in_usd.cmp(&b.amount())
         }
         (QuoteKind::Usd, QuoteKind::Sol) => {
-            let sol_price = sol_price();
-            let b_in_usd = (b * sol_price).amount() / USD_TO_WSOL_NUM;
+            let b_in_usd = sol_to_usd(b, sol_price());
             a.amount().cmp(&b_in_usd)
         }
     }
