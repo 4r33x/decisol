@@ -353,8 +353,16 @@ impl QuoteLamportsKind {
     #[inline]
     pub fn normalize<SOL: FnOnce() -> UD128, USD: FnOnce() -> UD128>(&self, quote_in: QuoteLamports, sol_price: SOL, usd_price: USD) -> QuoteLamports {
         match (quote_in.quote_kind(), self.quote_kind()) {
-            (QuoteKind::Usd, QuoteKind::Sol) => self.value((quote_in * usd_price()).amount()),
-            (QuoteKind::Sol, QuoteKind::Usd) => self.value((quote_in * sol_price()).amount()),
+            (QuoteKind::Usd, QuoteKind::Sol) => {
+                let usd_price = usd_price();
+                let v = usd_to_sol(quote_in * usd_price, usd_price);
+                self.value(v)
+            }
+            (QuoteKind::Sol, QuoteKind::Usd) => {
+                let sol_price = sol_price();
+                let v = sol_to_usd(quote_in * sol_price, sol_price);
+                self.value(v)
+            }
             (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => quote_in,
         }
     }
