@@ -349,6 +349,27 @@ fn sol_to_usd(a: impl Decisol, sol_price: UD128) -> u64 {
     (a * sol_price).amount() / USD_TO_WSOL_NUM
 }
 
+impl Display for QuoteLamportsKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            QuoteLamportsKind::Lamports => f.write_str("SOL"),
+            QuoteLamportsKind::Wsol => f.write_str("WSOL"),
+            QuoteLamportsKind::Usdc => f.write_str("USDC"),
+            QuoteLamportsKind::Usd1 => f.write_str("USD1"),
+            QuoteLamportsKind::Usdt => f.write_str("USDT"),
+        }
+    }
+}
+
+impl Display for QuoteKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            QuoteKind::Sol => f.write_str("SOL"),
+            QuoteKind::Usd => f.write_str("USD"),
+        }
+    }
+}
+
 impl QuoteLamportsKind {
     #[inline]
     pub fn normalize<SOL: FnOnce() -> UD128, USD: FnOnce() -> UD128>(&self, quote_in: QuoteLamports, sol_price: SOL, usd_price: USD) -> QuoteLamports {
