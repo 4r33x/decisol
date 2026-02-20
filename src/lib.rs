@@ -364,8 +364,8 @@ impl Display for QuoteLamportsKind {
 impl Display for QuoteKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            QuoteKind::Sol => f.write_str("SOL"),
-            QuoteKind::Usd => f.write_str("USD"),
+            QuoteKind::Sol => f.write_str(" SOL"),
+            QuoteKind::Usd => f.write_str("$"),
         }
     }
 }
