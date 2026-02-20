@@ -42,6 +42,9 @@ use proto_rs::proto_message;
 #[cfg(feature = "proto")]
 pub mod proto;
 
+const USD_TO_WSOL_POW_ARG: u8 = Sol::DECIMALS.checked_sub(Usd::DECIMALS).unwrap();
+const USD_TO_WSOL_NUM: u64 = 10u64.checked_pow(USD_TO_WSOL_POW_ARG as u32).unwrap();
+
 define_structs! {
     TokenLamports0: 0, Base;
     TokenLamports1: 1, Base;
@@ -345,11 +348,13 @@ pub fn compare_quotes_native<F: FnOnce() -> UD128>(usd_price: F, a: QuoteLamport
         (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.amount().cmp(&b.amount()),
         (QuoteKind::Usd, QuoteKind::Sol) => {
             let usd_price = usd_price();
-            (a * usd_price).amount().cmp(&b.amount())
+            let a_in_sol = (a * usd_price).amount().saturating_mul(USD_TO_WSOL_NUM);
+            a_in_sol.cmp(&b.amount())
         }
         (QuoteKind::Sol, QuoteKind::Usd) => {
             let usd_price = usd_price();
-            a.amount().cmp(&(b * usd_price).amount())
+            let b_in_sol = (b * usd_price).amount().saturating_mul(USD_TO_WSOL_NUM);
+            a.amount().cmp(&b_in_sol)
         }
     }
 }
@@ -359,11 +364,13 @@ pub fn compare_quotes_usd<F: FnOnce() -> UD128>(a: QuoteLamports, b: QuoteLampor
         (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.amount().cmp(&b.amount()),
         (QuoteKind::Sol, QuoteKind::Usd) => {
             let sol_price = sol_price();
-            (a * sol_price).amount().cmp(&b.amount())
+            let a_in_usd = (a * sol_price).amount() / USD_TO_WSOL_NUM;
+            a_in_usd.cmp(&b.amount())
         }
         (QuoteKind::Usd, QuoteKind::Sol) => {
             let sol_price = sol_price();
-            a.amount().cmp(&(b * sol_price).amount())
+            let b_in_usd = (b * sol_price).amount() / USD_TO_WSOL_NUM;
+            a.amount().cmp(&b_in_usd)
         }
     }
 }
