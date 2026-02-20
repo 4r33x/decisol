@@ -349,12 +349,12 @@ fn sol_to_usd(a: impl Decisol, sol_price: UD128) -> u64 {
     (a * sol_price).amount() / USD_TO_WSOL_NUM
 }
 
-impl QuoteLamports {
+impl QuoteLamportsKind {
     #[inline]
-    pub fn normalize<SOL: FnOnce() -> UD128, USD: FnOnce() -> UD128>(&self, quote_in: QuoteLamports, sol_price: SOL, usd_price: USD) -> Self {
+    pub fn normalize<SOL: FnOnce() -> UD128, USD: FnOnce() -> UD128>(&self, quote_in: QuoteLamports, sol_price: SOL, usd_price: USD) -> QuoteLamports {
         match (quote_in.quote_kind(), self.quote_kind()) {
-            (QuoteKind::Usd, QuoteKind::Sol) => self.with_amount((quote_in * usd_price()).amount()),
-            (QuoteKind::Sol, QuoteKind::Usd) => self.with_amount((quote_in * sol_price()).amount()),
+            (QuoteKind::Usd, QuoteKind::Sol) => self.value((quote_in * usd_price()).amount()),
+            (QuoteKind::Sol, QuoteKind::Usd) => self.value((quote_in * sol_price()).amount()),
             (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => quote_in,
         }
     }
