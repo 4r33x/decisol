@@ -1,6 +1,6 @@
 [package]
 name = "decisol"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
 
 [dependencies]
@@ -9,35 +9,33 @@ proto_rs = { version = "0.11", default-features = false, features = [
   "stable",
 ], optional = true }
 
-log = { version = "0.4", optional = true }
-serde = { version = "1" }
-anyhow = { version = "1" }
-fastnum = { version = "0.7.4", features = ["serde", "numtraits"] }
-num-traits = { version = "0.2", features = ["std"] }
+fastnum = { version = "0.7.4", features = ["numtraits", "serde"] }
 inventory = { version = "0.3", optional = true }
+log = { version = "0.4", optional = true }
+num-traits = { version = "0.2", features = ["std"] }
+serde = { version = "1" }
 
 [dev-dependencies]
 rust_decimal = "1.40.0"
 
-
 [features]
-default = ["overflow_errors", "track_caller", "check_enum_kind", "conv_errors"]
-build-schemas = ["dep:inventory", "proto_rs/build-schemas", "proto"]
+default = ["check_enum_kind", "conv_errors", "overflow_errors", "track_caller"]
+build-schemas = ["dep:inventory", "proto", "proto_rs/build-schemas"]
 proto = [
   "dep:proto_rs",
+  "proto_rs/emit-proto-files",
   "proto_rs/fastnum",
   "proto_rs/stable",
-  "proto_rs/emit-proto-files",
 ]
 
-track_caller = []
 overflow_checks = []
 overflow_errors = ["dep:log", "overflow_checks"]
 overflow_panics = ["overflow_checks"]
+track_caller = []
 
 conv_checks = []
-conv_errors = ["dep:log", "conv_checks"]
+conv_errors = ["conv_checks", "dep:log"]
 conv_panics = ["conv_checks"]
 
-check_enum_kind = []
 check_enum_decimals = []
+check_enum_kind = []
