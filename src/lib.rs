@@ -349,6 +349,24 @@ fn sol_to_usd(a: impl Decisol, sol_price: UD128) -> u64 {
     (a * sol_price).amount() / USD_TO_WSOL_NUM
 }
 
+// Comparison keys deliberately use the target quote's u64 precision. Values
+// that land in the same target-unit bucket must compare equal in every pairing.
+#[inline]
+fn quote_native_amount(quote: QuoteLamports, usd_price: UD128) -> u64 {
+    match quote.quote_kind() {
+        QuoteKind::Sol => quote.amount(),
+        QuoteKind::Usd => usd_to_sol(quote, usd_price),
+    }
+}
+
+#[inline]
+fn quote_usd_amount(quote: QuoteLamports, sol_price: UD128) -> u64 {
+    match quote.quote_kind() {
+        QuoteKind::Sol => sol_to_usd(quote, sol_price),
+        QuoteKind::Usd => quote.amount(),
+    }
+}
+
 impl Display for QuoteLamportsKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -389,31 +407,21 @@ impl QuoteLamportsKind {
 
 #[inline]
 pub fn compare_quotes_native<F: FnOnce() -> UD128>(usd_price: F, a: QuoteLamports, b: QuoteLamports) -> std::cmp::Ordering {
-    match (a.quote_kind(), b.quote_kind()) {
-        (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.amount().cmp(&b.amount()),
-        (QuoteKind::Usd, QuoteKind::Sol) => {
-            let a_in_sol = usd_to_sol(a, usd_price());
-            a_in_sol.cmp(&b.amount())
-        }
-        (QuoteKind::Sol, QuoteKind::Usd) => {
-            let b_in_sol = usd_to_sol(b, usd_price());
-            a.amount().cmp(&b_in_sol)
-        }
+    if matches!((a.quote_kind(), b.quote_kind()), (QuoteKind::Sol, QuoteKind::Sol)) {
+        return a.amount().cmp(&b.amount());
     }
+
+    let usd_price = usd_price();
+    quote_native_amount(a, usd_price).cmp(&quote_native_amount(b, usd_price))
 }
 #[inline]
 pub fn compare_quotes_usd<F: FnOnce() -> UD128>(a: QuoteLamports, b: QuoteLamports, sol_price: F) -> std::cmp::Ordering {
-    match (a.quote_kind(), b.quote_kind()) {
-        (QuoteKind::Usd, QuoteKind::Usd) | (QuoteKind::Sol, QuoteKind::Sol) => a.amount().cmp(&b.amount()),
-        (QuoteKind::Sol, QuoteKind::Usd) => {
-            let a_in_usd = sol_to_usd(a, sol_price());
-            a_in_usd.cmp(&b.amount())
-        }
-        (QuoteKind::Usd, QuoteKind::Sol) => {
-            let b_in_usd = sol_to_usd(b, sol_price());
-            a.amount().cmp(&b_in_usd)
-        }
+    if matches!((a.quote_kind(), b.quote_kind()), (QuoteKind::Usd, QuoteKind::Usd)) {
+        return a.amount().cmp(&b.amount());
     }
+
+    let sol_price = sol_price();
+    quote_usd_amount(a, sol_price).cmp(&quote_usd_amount(b, sol_price))
 }
 
 pub trait Quote {
@@ -500,6 +508,106 @@ mod tests {
     use fastnum::bint::UInt;
 
     use super::*;
+
+    const QUOTE_SORT_REGRESSION_PATTERN: [Option<u64>; 21] = [
+        Some(3),
+        Some(5),
+        Some(10),
+        None,
+        Some(4),
+        None,
+        Some(9),
+        Some(6),
+        None,
+        Some(1),
+        Some(9),
+        Some(1),
+        Some(7),
+        Some(5),
+        Some(1),
+        None,
+        Some(8),
+        Some(1),
+        None,
+        Some(3),
+        Some(1),
+    ];
+
+    fn quote(amount: u64, kind: QuoteLamportsKind) -> QuoteLamports {
+        QuoteLamports::new(amount, kind)
+    }
+
+    fn quote_sort_regression_values(primary_kind: QuoteLamportsKind, zero_kind: QuoteLamportsKind) -> Vec<QuoteLamports> {
+        QUOTE_SORT_REGRESSION_PATTERN
+            .map(|amount| match amount {
+                Some(amount) => quote(amount, primary_kind),
+                None => quote(0, zero_kind),
+            })
+            .to_vec()
+    }
+
+    fn assert_cmp_pair<F>(cmp: &F, a: QuoteLamports, b: QuoteLamports, expected: Ordering)
+    where
+        F: Fn(QuoteLamports, QuoteLamports) -> Ordering,
+    {
+        assert_eq!(cmp(a, b), expected);
+        assert_eq!(cmp(b, a), expected.reverse());
+    }
+
+    #[test]
+    fn compare_quotes_usd_uses_consistent_target_precision() {
+        let cmp = |a, b| compare_quotes_usd(a, b, || udec128!(100));
+        let lamports_10 = quote(10, QuoteLamportsKind::Lamports);
+        let lamports_11 = quote(11, QuoteLamportsKind::Lamports);
+        let lamports_20 = quote(20, QuoteLamportsKind::Lamports);
+        let usdc_1 = quote(1, QuoteLamportsKind::Usdc);
+
+        assert_cmp_pair(&cmp, lamports_10, usdc_1, Ordering::Equal);
+        assert_cmp_pair(&cmp, lamports_11, usdc_1, Ordering::Equal);
+        assert_cmp_pair(&cmp, lamports_10, lamports_11, Ordering::Equal);
+        assert_cmp_pair(&cmp, lamports_20, usdc_1, Ordering::Greater);
+    }
+
+    #[test]
+    fn compare_quotes_native_uses_consistent_target_precision() {
+        let cmp = |a, b| compare_quotes_native(|| udec128!(0.1), a, b);
+        let usdc_10 = quote(10, QuoteLamportsKind::Usdc);
+        let usdc_11 = quote(11, QuoteLamportsKind::Usdc);
+        let usdc_20 = quote(20, QuoteLamportsKind::Usdc);
+        let lamports_1_000 = quote(1_000, QuoteLamportsKind::Lamports);
+
+        assert_cmp_pair(&cmp, usdc_10, lamports_1_000, Ordering::Equal);
+        assert_cmp_pair(&cmp, usdc_11, lamports_1_000, Ordering::Equal);
+        assert_cmp_pair(&cmp, usdc_10, usdc_11, Ordering::Equal);
+        assert_cmp_pair(&cmp, usdc_20, lamports_1_000, Ordering::Greater);
+    }
+
+    #[test]
+    fn compare_quotes_usd_sort_regression() {
+        let mut values = quote_sort_regression_values(QuoteLamportsKind::Lamports, QuoteLamportsKind::Usdc);
+        let cmp = |a: &QuoteLamports, b: &QuoteLamports| compare_quotes_usd(*a, *b, || udec128!(100));
+
+        values.sort_by(cmp);
+        assert!(values.windows(2).all(|pair| cmp(&pair[0], &pair[1]) != Ordering::Greater));
+    }
+
+    #[test]
+    fn compare_quotes_native_sort_regression() {
+        let mut values = quote_sort_regression_values(QuoteLamportsKind::Usdc, QuoteLamportsKind::Lamports);
+        let cmp = |a: &QuoteLamports, b: &QuoteLamports| compare_quotes_native(|| udec128!(0.1), *a, *b);
+
+        values.sort_by(cmp);
+        assert!(values.windows(2).all(|pair| cmp(&pair[0], &pair[1]) != Ordering::Greater));
+    }
+
+    #[test]
+    fn mul_ud128_handles_negative_scale() {
+        let amount = Lamports::new(2_u64);
+        let result = amount * udec128!(5e9);
+
+        assert_eq!(result.amount(), 10_000_000_000);
+    }
+
     #[test]
     fn test_rust_decimal() {
         let rust_dec = rust_decimal::Decimal::from_f64_retain(0.999405000).unwrap();
