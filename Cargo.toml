@@ -1,6 +1,6 @@
 [package]
 name = "decisol"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2024"
 authors = ["4r33x <vonauwers@gmail.com>"]
 description = "Typed Solana-style token amount wrappers and decimal math for lamports, quotes, and runtime token decimals."
@@ -20,7 +20,7 @@ num-traits = { version = "0.2", features = ["std"] }
 serde = { version = "1" }
 
 [dev-dependencies]
-rust_decimal = "1.40.0"
+rust_decimal = "1"
 
 [features]
 default = ["check_enum_kind", "conv_errors", "overflow_errors", "track_caller"]
