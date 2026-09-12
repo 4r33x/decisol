@@ -2,6 +2,11 @@
 syntax = "proto3";
 package decisol;
 
+enum QuoteKind {
+  USD = 0;
+  SOL = 1;
+}
+
 enum QuoteLamportsKind {
   LAMPORTS = 0;
   WSOL = 1;

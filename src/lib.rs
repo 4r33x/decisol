@@ -289,6 +289,8 @@ impl QuoteLamports {
         }
     }
 }
+#[cfg_attr(feature = "proto", proto_message(proto_path = "protos/decisol.proto"))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum QuoteKind {
     Usd,
     Sol,
