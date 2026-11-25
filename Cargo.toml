@@ -8,12 +8,12 @@ license = "MIT"
 readme = "README.md"
 
 [dependencies]
-proto_rs = { version = "0.11", default-features = false, features = [
+proto_rs = { git = "https://github.com/4r33x/proto-rs", rev = "c8010d8ec7bd4f2d9037a6e2a82210ccfc9f357e", default-features = false, features = [
   "fastnum",
   "stable",
 ], optional = true }
 
-fastnum = { version = "0.7.4", features = ["numtraits", "serde"] }
+fastnum = { version = "0.7.5", features = ["numtraits", "serde"] }
 inventory = { version = "0.3", optional = true }
 log = { version = "0.4", optional = true }
 num-traits = { version = "0.2", features = ["std"] }
@@ -27,7 +27,6 @@ default = ["check_enum_kind", "conv_errors", "overflow_errors", "track_caller"]
 build-schemas = ["dep:inventory", "proto", "proto_rs/build-schemas"]
 proto = [
   "dep:proto_rs",
-  "proto_rs/emit-proto-files",
   "proto_rs/fastnum",
   "proto_rs/stable",
 ]
@@ -43,3 +42,7 @@ conv_panics = ["conv_checks"]
 
 check_enum_decimals = []
 check_enum_kind = []
+
+[patch.crates-io]
+# Required by the Solana-v13-compatible proto_rs revision.
+tonic = { git = "https://github.com/4r33x/proto-rs", rev = "c8010d8ec7bd4f2d9037a6e2a82210ccfc9f357e" }

@@ -141,7 +141,7 @@ impl From<QuoteLamports> for SolanaLamports {
     }
 }
 impl SolanaLamportsKind {
-    pub fn to_quote(self) -> Option<QuoteLamportsKind> {
+    pub const fn to_quote(self) -> Option<QuoteLamportsKind> {
         match self {
             SolanaLamportsKind::TokenLamports0
             | SolanaLamportsKind::TokenLamports1
@@ -169,7 +169,7 @@ impl SolanaLamportsKind {
             SolanaLamportsKind::Usdt => Some(QuoteLamportsKind::Usdt),
         }
     }
-    pub fn from_dec(dec: u8) -> Option<Self> {
+    pub const fn from_dec(dec: u8) -> Option<Self> {
         match dec {
             0 => Some(SolanaLamportsKind::TokenLamports0),
             1 => Some(SolanaLamportsKind::TokenLamports1),
@@ -193,7 +193,7 @@ impl SolanaLamportsKind {
             _ => None,
         }
     }
-    pub fn is_quote(&self) -> bool {
+    pub const fn is_quote(&self) -> bool {
         match self {
             Self::TokenLamports0
             | Self::TokenLamports1
@@ -217,7 +217,7 @@ impl SolanaLamportsKind {
             Self::Lamports | Self::Wsol | Self::Usdc | Self::Usd1 | Self::Usdt => true,
         }
     }
-    pub fn quote_kind(&self) -> Option<QuoteKind> {
+    pub const fn quote_kind(&self) -> Option<QuoteKind> {
         match self {
             Self::TokenLamports0
             | Self::TokenLamports1
@@ -244,13 +244,13 @@ impl SolanaLamportsKind {
     }
 }
 impl QuoteLamportsKind {
-    pub fn is_lamports(&self) -> bool {
+    pub const fn is_lamports(&self) -> bool {
         matches!(self, QuoteLamportsKind::Lamports)
     }
-    pub fn is_wsol(&self) -> bool {
+    pub const fn is_wsol(&self) -> bool {
         matches!(self, QuoteLamportsKind::Wsol)
     }
-    pub fn quote_kind(&self) -> QuoteKind {
+    pub const fn quote_kind(&self) -> QuoteKind {
         match self {
             Self::Lamports | Self::Wsol => QuoteKind::Sol,
             Self::Usdc | Self::Usd1 | Self::Usdt => QuoteKind::Usd,
@@ -276,13 +276,13 @@ impl QuoteLamports {
             QuoteKind::Sol => (Sol::new((*self).amount()), Usd::from(*self / usd_price)),
         }
     }
-    pub fn is_lamports(&self) -> bool {
+    pub const fn is_lamports(&self) -> bool {
         matches!(self.kind(), QuoteLamportsKind::Lamports)
     }
-    pub fn is_wsol(&self) -> bool {
+    pub const fn is_wsol(&self) -> bool {
         matches!(self.kind(), QuoteLamportsKind::Wsol)
     }
-    pub fn quote_kind(&self) -> QuoteKind {
+    pub const fn quote_kind(&self) -> QuoteKind {
         match self {
             Self::Lamports(_) | Self::Wsol(_) => QuoteKind::Sol,
             Self::Usdc(_) | Self::Usd1(_) | Self::Usdt(_) => QuoteKind::Usd,
